@@ -5,7 +5,6 @@ Script para la creación de la base de datos de El Zoologico de Huitziltepec
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 
-<<<<<<< Updated upstream
 CREATE TABLE Servicio(
 	IDServicio serial NOT NULL CHECK( IDServicio > 0),
 	TipoServicio VARCHAR(20) NOT NULL CHECK(TipoServicio IN ('baño','tienda','comida')),
@@ -33,7 +32,7 @@ CREATE TABLE CorreoProveedor(
 CREATE TABLE ProveerMedicina(
 	IDInsumoMedicina serial NOT NULL CHECK(IDInsumoMedicina>0),
 	RFCProveedor VARCHAR(13) NOT NULL CHECK(RFCProveedor <> '')
-=======
+
 --------TABLAS CON LLAVES PRIMARIAS-----------------
 CREATE TABLE CorreoVeterinario(
 	RFCVeterinario VARCHAR(13) CHECK(LENGTH(RFCVeterinario) = 13 OR LENGTH(RFCVeterinario) = 12
@@ -47,14 +46,5 @@ CREATE TABLE TelefonoVeterinario(
 									 AND RFCVeterinario <> ''),
 	Telefono CHAR(10) CHECK(Telefono ~ '^[0-9 ]*$' AND Telefono <> ''),
 	PRIMARY KEY(RFCVeterinario,Telefono)
->>>>>>> Stashed changes
+
 );
-
-
-
-<<<<<<< Updated upstream
-=======
-
-
-
->>>>>>> Stashed changes
