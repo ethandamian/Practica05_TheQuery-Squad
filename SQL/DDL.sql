@@ -18,20 +18,24 @@ CREATE TABLE TelefonoVisitante(
 );
 
 CREATE TABLE TelefonoProveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK(RFCProveedor <> ''),
+	RFCProveedor VARCHAR(13) NOT NULL CHECK(LENGTH(RFCProveedor) = 13 OR LENGTH(RFCProveedor) = 12
+									 										AND RFCProveedor <> ''),
 	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
 	PRIMARY KEY(RFCProveedor, Telefono)
 );
 
 CREATE TABLE CorreoProveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK(RFCProveedor <> ''),
+	RFCProveedor VARCHAR(13) NOT NULL CHECK(LENGTH(RFCProveedor) = 13 OR LENGTH(RFCProveedor) = 12
+									 										AND RFCProveedor <> ''),
 	Correo VARCHAR(50) NOT NULL CHECK(Correo LIKE '%_@_%._%' ),
 	PRIMARY KEY(RFCProveedor, Correo)
 );
 
 CREATE TABLE ProveerMedicina(
-	IDInsumoMedicina serial NOT NULL CHECK(IDInsumoMedicina>0),
-	RFCProveedor VARCHAR(13) NOT NULL CHECK(RFCProveedor <> '')
+	IDInsumoMedicina serial NOT NULL CHECK(IDInsumoMedicina > 0),
+	RFCProveedor VARCHAR(13) NOT NULL CHECK(LENGTH(RFCProveedor) = 13 OR LENGTH(RFCProveedor) = 12
+									 										AND RFCProveedor <> '')
+);
 
 --------TABLAS CON LLAVES PRIMARIAS-----------------
 CREATE TABLE CorreoVeterinario(
