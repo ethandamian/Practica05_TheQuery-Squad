@@ -31,11 +31,8 @@ CREATE TABLE CorreoProveedor(
 
 CREATE TABLE ProveerMedicina(
 	IDInsumoMedicina serial NOT NULL CHECK(IDInsumoMedicina > 0),
-<<<<<<< Updated upstream
 	RFCProveedor VARCHAR(13) NOT NULL CHECK(LENGTH(RFCProveedor) = 13 OR LENGTH(RFCProveedor) = 12 AND RFCProveedor LIKE '^[A-Z]{4}[0-9]{6}[A-Z0-9]{0,3}$')
-=======
 	RFCProveedor VARCHAR(13) NOT NULL CHECK(RFCProveedor <> '')
->>>>>>> Stashed changes
 );
 
 --------TABLAS CON LLAVES PRIMARIAS-----------------
