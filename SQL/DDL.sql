@@ -286,7 +286,7 @@ CREATE TABLE TelefonoCuidador(
 
 --CorreoVisitante--
 CREATE TABLE correovisitante (
-	IDVisitante serial NOT NULL CHECK (IDVisitante > 0),
+	IDVisitante SERIAL,
 	Correo VARCHAR(50) CHECK(Correo LIKE '%@%._%' AND Correo <> ''),
 	PRIMARY KEY(IdVisitante, Correo)
 );
@@ -295,7 +295,7 @@ CREATE TABLE correovisitante (
 
 --Jaula--
 CREATE TABLE Jaula(
-	IDJaula serial NOT NULL CHECK(IDJaula > 0),
+	IDJaula SERIAL,
 	IDAnimal INT NOT NULL,
 	PRIMARY KEY(IDJaula),
 	CONSTRAINT fk_animal 
@@ -305,7 +305,7 @@ CREATE TABLE Jaula(
 
 --Evento--
 CREATE TABLE  Evento(
-	IDEvento serial NOT NULL CHECK(IDEvento > 0),
+	IDEvento SERIAL,
 	IDVisitante INT NOT NULL, 
 	TipoEvento VARCHAR(50) NOT NULL,
 	Fecha DATE NOT NULL CHECK (fechaColumn >= GETDATE()),
