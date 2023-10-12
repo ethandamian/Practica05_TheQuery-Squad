@@ -60,8 +60,13 @@ CREATE TABLE Notificar(
 );
 
 CREATE TABLE Veterinario(
-	RFCVeterinario VARCHAR(13) CHECK (RFCVeterinario <> '', AND (LENGTH(RFCVeterinario = 13) OR LENGTH(RFCVeterinario = 12) )),
-	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> '' AND Nombre LIKE '%[a-zA-Z]%'),
+	RFCVeterinario VARCHAR(13) NOT NULL CHECK 
+										(RFCVeterinario <> '', AND 
+										 (LENGTH(RFCVeterinario = 13) OR 
+										  LENGTH(RFCVeterinario = 12) ) AND 
+										LEFT(RFCVeterinario,4) LIKE '%[A-Z]%' AND
+										RIGHT(RFCVeterinario,6) ~ '^[0-9 ]*$'),
+	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> '' AND Nombre LIKE '%[a-zA-Z]%'\),
 	ApellidoPaterno VARCHAR(50) NOT NULL CHECK(ApellidoPaterno <> '' AND ApellidoPaterno LIKE '%[a-zA-Z]%'),
 	ApellidoMaterno VARCHAR(50) NOT NULL CHECK(ApellidoMaterno <> '' AND ApellidoMaterno LIKE '%[a-zA-Z]%'),
 	Calle VARCHAR(50) NOT NULL CHECK(Calle <> ''),
@@ -81,7 +86,12 @@ CREATE TABLE Veterinario(
 
 
 CREATE TABLE Proveedor(
-	RFCProveedor VARCHAR(13) CHECK (RFCProveedor <> '',AND (LENGTH(RFCProveedor = 13) OR LENGTH(RFCProveedor = 12) )),
+	RFCProveedor VARCHAR(13) NOT NULL CHECK 
+										(RFCProveedor <> '', AND 
+										 (LENGTH(RFCProveedor = 13) OR 
+										  LENGTH(RFCProveedor = 12) ) AND 
+										LEFT(RFCProveedor,4) LIKE '%[A-Z]%' AND
+										RIGHT(RFCProveedor,6) ~ '^[0-9 ]*$'),
 	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> '' AND Nombre LIKE '%[a-zA-Z]%'),
 	ApellidoPaterno VARCHAR(50) NOT NULL CHECK(ApellidoPaterno <> '' AND ApellidoPaterno LIKE '%[a-zA-Z]%'),
 	ApellidoMaterno VARCHAR(50) NOT NULL CHECK(ApellidoMaterno <> '' AND ApellidoMaterno LIKE '%[a-zA-Z]%'),
@@ -102,7 +112,12 @@ CREATE TABLE Proveedor(
 
 
 CREATE TABLE Cuidador(
-	RFCCuidador VARCHAR(13) CHECK (RFCCuidador <> '',AND (LENGTH(RFCCuidador = 13) OR LENGTH(RFCCuidador = 12) )),
+	RFCCuidador VARCHAR(13) NOT NULL CHECK 
+										(RFCCuidador <> '', AND 
+										 (LENGTH(RFCCuidador = 13) OR 
+										  LENGTH(RFCCuidador = 12) ) AND 
+										LEFT(RFCCuidador,4) LIKE '%[A-Z]%' AND
+										RIGHT(RFCCuidador,6) ~ '^[0-9 ]*$'),
 	IDBioma INT NOT NULL, 
 	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> '' AND Nombre LIKE '%[a-zA-Z]%'),
 	ApellidoPaterno VARCHAR(50) CHECK(ApellidoPaterno <> '' AND ApellidoPaterno LIKE '%[a-zA-Z]%'),
@@ -140,7 +155,12 @@ CREATE TABLE Alimento(
 );
 
 CREATE TABLE Trabajar(
-	RFCVeterinario VARCHAR(13) NOT NULL,
+	RFCVeterinario VARCHAR(13) NOT NULL CHECK 
+										(RFCVeterinario <> '', AND 
+										 (LENGTH(RFCVeterinario = 13) OR 
+										  LENGTH(RFCVeterinario = 12) ) AND 
+										LEFT(RFCVeterinario,4) LIKE '%[A-Z]%' AND
+										RIGHT(RFCVeterinario,6) ~ '^[0-9 ]*$'),
 	IDBioma INT NOT NULL,
 	FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario),
 	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
