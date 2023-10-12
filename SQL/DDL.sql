@@ -279,14 +279,24 @@ CREATE TABLE DistribuirAlimento(
 
 --CorreoCuidador--
 CREATE TABLE CorreoCuidador(
-	RFCCuidador VARCHAR(13) CHECK(LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12 AND RFCCuidador <> ''),
+	RFCCuidador VARCHAR(13) NOT NULL CHECK 
+										(RFCCuidador <> '', AND 
+										 (LENGTH(RFCCuidador = 13) OR 
+										  LENGTH(RFCCuidador = 12) ) AND 
+										LEFT(RFCCuidador,4) LIKE '%[A-Z]%' AND
+										RIGHT(RFCCuidador,6) ~ '^[0-9 ]*$'),
 	Correo VARCHAR(50) CHECK(Correo LIKE '%@%._%' AND Correo <> ''),
 	PRIMARY KEY(RFCCuidador, Correo)
 );
 
 --TelefonoCuidador--
 CREATE TABLE TelefonoCuidador(
-	RFCCuidador VARCHAR(13) CHECK(LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12 AND RFCCuidador <> ''),
+	RFCCuidador VARCHAR(13) NOT NULL CHECK 
+										(RFCCuidador <> '', AND 
+										 (LENGTH(RFCCuidador = 13) OR 
+										  LENGTH(RFCCuidador = 12) ) AND 
+										LEFT(RFCCuidador,4) LIKE '%[A-Z]%' AND
+										RIGHT(RFCCuidador,6) ~ '^[0-9 ]*$'),
 	Telefono CHAR(10) CHECK(Telefono ~ '^[0-9 ] *$' AND Telefono <> ''),
 	PRIMARY KEY(RFCCuidador,Telefono)
 );
@@ -314,9 +324,9 @@ CREATE TABLE Jaula(
 CREATE TABLE  Evento(
 	IDEvento SERIAL,
 	IDVisitante INT NOT NULL, 
-	TipoEvento VARCHAR(50) NOT NULL,
-	Fecha DATE NOT NULL CHECK (fechaColumn >= GETDATE()),
-	Capacidad INT NOT NULL,
+	TipoEvento VARCHAR(50) NOT NULL CHECK(TipoEvento <> ''),
+	Fecha DATE NOT NULL,
+	Capacidad INT NOT NULL CHECK(Capacidad > 0),
 	PRIMARY KEY(IDEvento),
 	CONSTRAINT fk_visitante
 		FOREIGN KEY (IDVisitante)
@@ -324,8 +334,8 @@ CREATE TABLE  Evento(
 )
 --Tener--
 CREATE TABLE Tener(
-	IDBioma INT NOT NULL,
-	IDServicio INT NOT NULL
+	IDBioma SERIAL,
+	IDServicio SERIAL,
 	CONSTRAINT fk_idbioma
 		FOREIGN KEY (IDBioma)
 			REFERENCES Bioma (IDBioma),
