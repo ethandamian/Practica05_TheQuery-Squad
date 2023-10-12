@@ -127,7 +127,7 @@ CREATE TABLE Cuidador(
         (ApellidoPaterno IS NOT NULL OR ApellidoMaterno IS NOT NULL)
     ),
 	Calle VARCHAR(50) NOT NULL CHECK(Calle <> ''),
-	NumInterior INT NOT NULL,
+	NumInterior INT,
 	NumExterior INT NOT NULL,
 	Colonia VARCHAR(50) NOT NULL CHECK(Colonia <> ''),
 	Estado VARCHAR(50) NOT NULL CHECK(Estado <> '' AND Estado LIKE '%[a-zA-Z]%'),
@@ -135,7 +135,7 @@ CREATE TABLE Cuidador(
 	FechaFinContrato DATE NOT NULL,
 	FechaNacimiento DATE NOT NULL,
 	Genero VARCHAR(10) NOT NULL CHECK(Genero <> '' AND Genero LIKE '%[a-zA-Z]%'),
-	DiasTrabajo INT NOT NULL CHECK(DiasTrabajo > 0),
+	DiasTrabajo INT NOT NULL CHECK(DiasTrabajo > 0 AND DiasTrabajo <30),
 	HorarioLaboral VARCHAR(50) NOT NULL CHECK(HorarioLaboral <> ''),
 	Salario DECIMAL NOT NULL  CHECK(Salario > 0),
 	PRIMARY KEY(RFCCuidador),
@@ -167,6 +167,106 @@ CREATE TABLE Trabajar(
 );
 
 --------------- FINAL PARTE ETHAN ---------------------------------
+
+------------------------------------Parte Gael------------------------------------
+
+CREATE TABLE DistribuirMedicina(
+	IDInsumoMedicina int,
+	IDBioma int,
+	 constraint fk_Medicina 
+    	foreign key (IDInsumoMedicina) 
+    		references Medicina (IDInsumoMedicina),
+    constraint fk_Bioma
+    	foreign key (IDBioma) 
+    		references Bioma (IDBioma)
+
+);
+
+create table Medicina(
+	IDInsumoMedicina int,
+	Nombre varchar(50) not null check(Nombre <> ''),
+	Cantidad int,
+	FechaCaducidad date,
+	Refrigeracion bool, 
+	Lote int not NULL,
+	Laboratorio varchar(50) not null check(Laboratorio <> ''),
+	primary key(IDInsumoMedicina)
+
+); 
+
+CREATE TABLE Cuidar (
+    RFCCuidador varchar(13) NOT NULL CHECK (RFCCuidador <> '' AND (LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12)),
+    IDAnimal int not null,
+    Nombre varchar(50) NOT NULL CHECK (Nombre <> '' and Nombre like '%[a-zA-z]'),
+    ApellidoPaterno varchar(50) check (ApellidoPaterno <> '' and ApellidoPaterno like '%[a-zA-z]'),
+    ApellidoMaterno varchar(50) check (ApellidoPaterno <> '' and ApellidoPaterno like '%[a-zA-z]'),
+    -- Restricción CHECK que permite ambos apellidos o uno de ellos
+    CONSTRAINT chk_apellidos CHECK (
+        (ApellidoPaterno IS NOT NULL OR ApellidoMaterno IS NOT NULL)
+    ),
+    Calle varchar(50) NOT NULL CHECK (Calle <> '' and Calle like '%[a-zA-z]'),
+    NumInterior int,
+    NumExterior int not null,
+    Colonia varchar(50) NOT NULL CHECK (Colonia <> '' and Colonia like '%[a-zA-z]'),
+    Estado varchar(50) NOT NULL CHECK (Estado <> '' and Estado like '%[a-zA-z]'),
+    FechaInicioContrato date not NULL,
+    FechaFinContrato date not NULL,
+    DiasTrabajo int not null check (DiasTrabajo > 0 and DiasTrabajo < 30),
+    HorarioLaboral time not null,
+    Salario decimal not null check (Salario > 0),
+    Genero varchar(10) not null check (Genero <> ''),
+    Sexo varchar(10) not null check (Sexo <> '' and Sexo like '%[a-zA-z]'),
+    Altura decimal not null,
+    Peso decimal not null,
+    Especie varchar(50) not null check (Especie <> '' and Especie like '%[a-zA-z]'),
+    NombreAnimal varchar(50) not null check (NombreAnimal <> '' and NombreAnimal like '%[a-zA-z]'),
+    Alimentacion varchar(50) not null check (Alimentacion <> '' and Alimentacion like '%[a-zA-z]'),
+    constraint fk_cuidador 
+    	foreign key (RFCCuidador) 
+    		references Cuidador (RFCCuidador),
+    constraint fk_animal 
+    	foreign key (IDAnimal) 
+    		references Animal (IDAnimal)
+);
+
+CREATE TABLE Comprar(
+	IDVisitante int,
+	IDServicio int,
+	 constraint fk_Visitante 
+    	foreign key (IDVisitante) 
+    		references Visitante (IDVisitante),
+    constraint fk_Servicio
+    	foreign key (IDServicio) 
+    		references Servicio (IDServicio)
+    		
+
+);
+
+create  table ProveerAlimento(
+	IDInsumoAlimento int,
+	RFCProveedor varchar(13),
+	 constraint fk_Alimento 
+    	foreign key (IDInsumoAlimento) 
+    		references Alimento (IDInsumoAlimento),
+    constraint fk_Proveedor
+    	foreign key (RFCProveedor) 
+    		references Proveedor(RFCProveedor)
+
+);
+
+create table DistribuirAlimento(
+	IDInsumoAlimento int,
+	IDBioma int,
+	 constraint fk_Alimento
+    	foreign key (IDInsumoAlimento) 
+    		references Alimento (IDInsumoAlimento),
+    constraint fk_Bioma
+    	foreign key (IDBioma) 
+    		references Bioma(IDBioma)
+
+);
+
+------------------------------------Parte Gael Fin------------------------------------
 
 --------------- INICIA PARTE ROGER ---------------
 
