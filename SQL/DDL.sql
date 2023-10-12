@@ -165,4 +165,67 @@ CREATE TABLE Trabajar(
 	FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario),
 	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
 );
+
 --------------- FINAL PARTE ETHAN ---------------------------------
+
+--------------- INICIA PARTE ROGER ---------------
+
+--CorreoCuidador--
+CREATE TABLE CorreoCuidador(
+	RFCCuidador VARCHAR(13) CHECK(LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12 AND RFCCuidador <> ''),
+	Correo VARCHAR(50) CHECK(Correo LIKE '%@%._%' AND Correo <> ''),
+	PRIMARY KEY(RFCCuidador, Correo)
+);
+
+--TelefonoCuidador--
+CREATE TABLE TelefonoCuidador(
+	RFCCuidador VARCHAR(13) CHECK(LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12 AND RFCCuidador <> ''),
+	Telefono CHAR(10) CHECK(Telefono ~ '^[0-9 ] *$' AND Telefono <> ''),
+	PRIMARY KEY(RFCCuidador,Telefono)
+);
+
+--CorreoVisitante--
+CREATE TABLE correovisitante (
+	IDVisitante serial NOT NULL CHECK (IDVisitante > 0),
+	Correo VARCHAR(50) CHECK(Correo LIKE '%@%._%' AND Correo <> ''),
+	PRIMARY KEY(IdVisitante, Correo)
+);
+
+-- TABLAS CON FK
+
+--Jaula--
+CREATE TABLE Jaula(
+	IDJaula serial NOT NULL CHECK(IDJaula > 0),
+	IDAnimal INT NOT NULL,
+	PRIMARY KEY(IDJaula),
+	CONSTRAINT fk_animal 
+    	FOREIGN KEY (IDAnimal) 
+    		REFERENCES Animal (IDAnimal)
+);
+
+--Evento--
+CREATE TABLE  Evento(
+	IDEvento serial NOT NULL CHECK(IDEvento > 0),
+	IDVisitante INT NOT NULL, 
+	TipoEvento VARCHAR(50) NOT NULL,
+	Fecha DATE NOT NULL CHECK (fechaColumn >= GETDATE()),
+	Capacidad INT NOT NULL,
+	PRIMARY KEY(IDEvento),
+	CONSTRAINT fk_visitante
+		FOREIGN KEY (IDVisitante)
+			REFERENCES Visitante (IDVisitante)
+)
+--Tener--
+CREATE TABLE Tener(
+	IDBioma INT NOT NULL,
+	IDServicio INT NOT NULL
+	CONSTRAINT fk_idbioma
+		FOREIGN KEY (IDBioma)
+			REFERENCES Bioma (IDBioma),
+	CONSTRAINT fk_idservicio
+		FOREIGN KEY (IDServicio)
+			REFERENCES Servicio (IDServicio)
+	
+)
+
+--------------- FIN PARTE ROGER ---------------
