@@ -185,9 +185,9 @@ CREATE TABLE DistribuirMedicina(
 create table Medicina(
 	IDInsumoMedicina int,
 	Nombre varchar(50) not null check(Nombre <> ''),
-	Cantidad int,
-	FechaCaducidad date,
-	Refrigeracion bool, 
+	Cantidad int not null,
+	FechaCaducidad date not null,
+	Refrigeracion bool not null, 
 	Lote int not NULL,
 	Laboratorio varchar(50) not null check(Laboratorio <> ''),
 	primary key(IDInsumoMedicina)
