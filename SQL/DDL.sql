@@ -147,7 +147,7 @@ CREATE TABLE Alimento(
 	IDInsumoAlimento INT,
 	Nombre VARCHAR(50) NOT NULL CHECK (Nombre <> '' AND Nombre LIKE '%[a-zA-Z]%'),
 	Cantidad INT NOT NULL CHECK(Cantidad > 0),
-	FechaCaducidad DATE NOT NULL CHECK(FechaCaducidad < CURRENT_DATE),
+	FechaCaducidad DATE NOT NULL CHECK(FechaCaducidad < CURRENT_DATE AND FechaCaducidad >= CURRENT_DATE),
 	Refrigeracion BOOL NOT NULL,
 	TipoAlimento VARCHAR(50) NOT NULL CHECK(TipoAlimento <> ''),
 	PRIMARY KEY(IDInsumoAlimento)
