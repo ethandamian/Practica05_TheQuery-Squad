@@ -171,8 +171,8 @@ CREATE TABLE Trabajar(
 ------------------------------------Parte Gael------------------------------------
 
 CREATE TABLE DistribuirMedicina(
-	IDInsumoMedicina int,
-	IDBioma int,
+	IDInsumoMedicina Serial,
+	IDBioma Serial,
 	 constraint fk_Medicina 
     	foreign key (IDInsumoMedicina) 
     		references Medicina (IDInsumoMedicina),
@@ -183,7 +183,7 @@ CREATE TABLE DistribuirMedicina(
 );
 
 create table Medicina(
-	IDInsumoMedicina int,
+	IDInsumoMedicina Serial,
 	Nombre varchar(50) not null check(Nombre <> ''),
 	Cantidad int not null,
 	FechaCaducidad date not null,
@@ -196,7 +196,7 @@ create table Medicina(
 
 CREATE TABLE Cuidar (
     RFCCuidador varchar(13) NOT NULL CHECK (RFCCuidador <> '' AND (LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12)),
-    IDAnimal int not null,
+    IDAnimal Serial not null,
     Nombre varchar(50) NOT NULL CHECK (Nombre <> '' and Nombre like '%[a-zA-z]'),
     ApellidoPaterno varchar(50) check (ApellidoPaterno <> '' and ApellidoPaterno like '%[a-zA-z]'),
     ApellidoMaterno varchar(50) check (ApellidoPaterno <> '' and ApellidoPaterno like '%[a-zA-z]'),
@@ -230,8 +230,8 @@ CREATE TABLE Cuidar (
 );
 
 CREATE TABLE Comprar(
-	IDVisitante int,
-	IDServicio int,
+	IDVisitante Serial,
+	IDServicio Serial,
 	 constraint fk_Visitante 
     	foreign key (IDVisitante) 
     		references Visitante (IDVisitante),
@@ -243,7 +243,7 @@ CREATE TABLE Comprar(
 );
 
 create  table ProveerAlimento(
-	IDInsumoAlimento int,
+	IDInsumoAlimento Serial,
 	RFCProveedor varchar(13),
 	 constraint fk_Alimento 
     	foreign key (IDInsumoAlimento) 
@@ -255,8 +255,8 @@ create  table ProveerAlimento(
 );
 
 create table DistribuirAlimento(
-	IDInsumoAlimento int,
-	IDBioma int,
+	IDInsumoAlimento Serial,
+	IDBioma Serial,
 	 constraint fk_Alimento
     	foreign key (IDInsumoAlimento) 
     		references Alimento (IDInsumoAlimento),
