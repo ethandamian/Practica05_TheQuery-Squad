@@ -5,109 +5,23 @@ DROP SCHEMA IF EXISTS public CASCADE;
 
 CREATE SCHEMA public;
 
+
+------------------------------------- Tablas con llaves primarias ----------------------------------
+
 CREATE TABLE Servicio(
 	IDServicio SERIAL,
 	TipoServicio VARCHAR(20) NOT NULL CHECK(TipoServicio IN ('baño', 'tienda', 'comida')),
 	PRIMARY KEY (IDServicio)
 );
 
-CREATE TABLE TelefonoVisitante(
-	IDVisitante SERIAL,
-	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
-	PRIMARY KEY(IDVisitante, Telefono)
-);
-
-CREATE TABLE TelefonoProveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> '',
-		AND (
-			LENGTH(RFCProveedor = 13)
-			OR LENGTH(RFCProveedor = 12)
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
-	PRIMARY KEY(RFCProveedor, Telefono)
-);
-
-CREATE TABLE CorreoProveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> '',
-		AND (
-			LENGTH(RFCProveedor = 13)
-			OR LENGTH(RFCProveedor = 12)
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Correo VARCHAR(50) NOT NULL CHECK(Correo LIKE '%_@_%._%'),
-	PRIMARY KEY(RFCProveedor, Correo)
-);
-
-CREATE TABLE ProveerMedicina(
-	IDInsumoMedicina SERIAL,
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> '',
-		AND (
-			LENGTH(RFCProveedor = 13)
-			OR LENGTH(RFCProveedor = 12)
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	) --TODO FK KEYS
-);
-
---------TABLAS CON LLAVES PRIMARIAS-----------------
-CREATE TABLE CorreoVeterinario(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> '',
-		AND (
-			LENGTH(RFCProveedor = 13)
-			OR LENGTH(RFCProveedor = 12)
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Correo VARCHAR(50) CHECK (
-		Correo LIKE '%_@_%._%'
-		AND Correo <> ''
-	),
-	PRIMARY KEY(RFCVeterinario, Correo)
-);
-
-CREATE TABLE TelefonoVeterinario(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> '',
-		AND (
-			LENGTH(RFCProveedor = 13)
-			OR LENGTH(RFCProveedor = 12)
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Telefono CHAR(10) CHECK(
-		Telefono ~ '^[0-9 ]*$'
-		AND Telefono <> ''
-	),
-	PRIMARY KEY(RFCVeterinario, Telefono)
-);
-
-------------------------------PARTE ETHAN -----------------------------------------------
-CREATE TABLE Notificar(
-	idEvento SERIAL,
-	IDVisitante SERIAL,
-	TipoNotificacion VARCHAR(50) NOT NULL CHECK (TipoNotificacion <> '') FOREIGN KEY (idEvento) REFERENCES Evento(idEvento),
-	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
-);
 
 CREATE TABLE Veterinario(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
-		RFCVeterinario <> '',
-		AND (
-			LENGTH(RFCVeterinario = 13)
-			OR LENGTH(RFCVeterinario = 12)
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
+	RFCVeterinario VARCHAR(13) NOT NULL CHECK ( RFCVeterinario <> '' 
+	AND (LENGTH(RFCVeterinario) = 13 OR LENGTH(RFCVeterinario) = 12)
+	AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'),
 	Nombre VARCHAR(50) NOT NULL CHECK(
 		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%' \
+		AND Nombre LIKE '%[a-zA-Z]%' 
 	),
 	ApellidoPaterno VARCHAR(50) NOT NULL CHECK(
 		ApellidoPaterno <> ''
@@ -136,15 +50,16 @@ CREATE TABLE Veterinario(
 	Especialidad VARCHAR(50) NOT NULL CHECK(
 		Especialidad <> ''
 		AND Especialidad LIKE '%[a-zA-Z]%'
-	) PRIMARY KEY(RFCVeterinario)
+	), PRIMARY KEY(RFCVeterinario)
 );
+
 
 CREATE TABLE Proveedor(
 	RFCProveedor VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> '',
+		RFCProveedor <> ''
 		AND (
-			LENGTH(RFCProveedor = 13)
-			OR LENGTH(RFCProveedor = 12)
+			LENGTH(RFCProveedor) = 13
+			OR LENGTH(RFCProveedor) = 12
 		)
 		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
 	),
@@ -180,12 +95,82 @@ CREATE TABLE Proveedor(
 	PRIMARY KEY(RFCProveedor)
 );
 
+
+CREATE TABLE Bioma(
+	IDBioma SERIAL,
+	TipoBioma VARCHAR(50) NOT NULL CHECK (
+		TipoBioma IN (
+			'desierto',
+			'pastizales',
+			'franja costera',
+			'aviario',
+			'bosque templado',
+			'bosque tropical'
+		)
+	),
+	PRIMARY KEY(IDBioma)
+);
+
+
+CREATE TABLE Alimento(
+	IDInsumoAlimento SERIAL,
+	Nombre VARCHAR(50) NOT NULL CHECK (
+		Nombre <> ''
+		AND Nombre LIKE '%[a-zA-Z]%'
+	),
+	Cantidad INT NOT NULL CHECK(Cantidad > 0),
+	FechaCaducidad DATE NOT NULL CHECK(
+		FechaCaducidad < CURRENT_DATE
+		AND FechaCaducidad >= CURRENT_DATE
+	),
+	Refrigeracion BOOL NOT NULL,
+	TipoAlimento VARCHAR(50) NOT NULL CHECK(TipoAlimento <> ''),
+	PRIMARY KEY(IDInsumoAlimento)
+);
+
+
+CREATE TABLE Visitante(
+	IDVisitante SERIAL,
+	Genero VARCHAR(50) NOT NULL CHECK (
+		Genero <> ''
+		AND Genero LIKE '%[a-zA-Z]%'
+	),
+	Nombre VARCHAR(50) NOT NULL CHECK (
+		Nombre <> ''
+		AND Nombre LIKE '%[a-zA-Z]%'
+	),
+	Paterno VARCHAR(50) NOT NULL CHECK (
+		Paterno <> ''
+		AND Paterno LIKE '%[a-zA-Z]%'
+	),
+	Materno VARCHAR(50) NOT NULL CHECK (
+		Materno <> ''
+		AND Materno LIKE '%[a-zA-Z]%'
+	),
+	PRIMARY KEY(IDVisitante)
+);
+
+
+CREATE TABLE Medicina(
+	IDInsumoMedicina SERIAL,
+	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> ''),
+	Cantidad INT NOT NULL,
+	FechaCaducidad DATE NOT NULL,
+	Refrigeracion BOOL NOT NULL,
+	Lote INT NOT NULL,
+	Laboratorio VARCHAR(50) NOT NULL CHECK(Laboratorio <> ''),
+	PRIMARY KEY(IDInsumoMedicina)
+);
+
+
+-----------------------------------Tablas con llaves foráneas -------------------------------------
+
 CREATE TABLE Cuidador(
 	RFCCuidador VARCHAR(13) NOT NULL CHECK (
-		RFCCuidador <> '',
+		RFCCuidador <> ''
 		AND (
-			LENGTH(RFCCuidador = 13)
-			OR LENGTH(RFCCuidador = 12)
+			LENGTH(RFCCuidador) = 13
+			OR LENGTH(RFCCuidador) = 12
 		)
 		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
 	),
@@ -233,28 +218,104 @@ CREATE TABLE Cuidador(
 	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
 );
 
-CREATE TABLE Alimento(
-	IDInsumoAlimento SERIAL,
-	Nombre VARCHAR(50) NOT NULL CHECK (
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%'
-	),
-	Cantidad INT NOT NULL CHECK(Cantidad > 0),
-	FechaCaducidad DATE NOT NULL CHECK(
-		FechaCaducidad < CURRENT_DATE
-		AND FechaCaducidad >= CURRENT_DATE
-	),
-	Refrigeracion BOOL NOT NULL,
-	TipoAlimento VARCHAR(50) NOT NULL CHECK(TipoAlimento <> ''),
-	PRIMARY KEY(IDInsumoAlimento)
+
+CREATE TABLE Jaula(
+	IDJaula SERIAL,
+	IDAnimal INT NOT NULL,
+	PRIMARY KEY(IDJaula)
 );
+
+
+CREATE TABLE Animal(
+	IDAnimal SERIAL,
+	IDBioma SERIAL,
+	IDJaula SERIAL,
+	NombreAnimal VARCHAR(50) NOT NULL CHECK (
+		NombreAnimal <> ''
+		AND NombreAnimal LIKE '%[a-zA-Z]%'
+	),
+	Sexo VARCHAR(50) NOT NULL CHECK (Sexo IN ('macho', 'hembra')),
+	Altura DECIMAL NOT NULL CHECK (Altura > 0),
+	Peso DECIMAL NOT NULL CHECK (Peso > 0),
+	Especie VARCHAR(50) NOT NULL CHECK (
+		Especie <> ''
+		AND Especie LIKE '%[a-zA-Z]%'
+	),
+	Edad INT NOT NULL CHECK (Edad > 0),
+	Alimentacion VARCHAR(50) NOT NULL CHECK (
+		Alimentacion IN (
+			'carnívoro',
+			'herbívoro',
+			'omnívoro'
+		)
+	),
+	PRIMARY KEY(IDAnimal),
+	FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma),
+	FOREIGN KEY (IDJaula) REFERENCES Jaula (IDJaula)
+);
+
+ALTER TABLE Jaula ADD CONSTRAINT IDAnimal
+ FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+
+
+CREATE TABLE Evento(
+	IDEvento SERIAL,
+	IDVisitante INT NOT NULL,
+	TipoEvento VARCHAR(50) NOT NULL CHECK(TipoEvento <> ''),
+	Fecha DATE NOT NULL,
+	Capacidad INT NOT NULL CHECK(Capacidad > 0),
+	PRIMARY KEY(IDEvento),
+	CONSTRAINT fk_visitante FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+) 
+
+
+CREATE TABLE Ticket(
+	NumTicket SERIAL,
+	IDVisitante SERIAL,
+	Descuento INT NOT NULL CHECK (
+		Descuento >= 0
+		AND Descuento <= 100
+	),
+	CostoUnitario DECIMAL NOT NULL CHECK (CostoUnitario > 0),
+	TipoServicio VARCHAR(50) NOT NULL CHECK (
+		TipoServicio IN ('baño', 'tienda', 'comida')
+	),
+	Fecha DATE NOT NULL,
+	PRIMARY KEY(NumTicket),
+	CONSTRAINT fk_idvisitante FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+);
+
+
+CREATE TABLE ProveerMedicina(
+	IDInsumoMedicina SERIAL,
+	RFCProveedor VARCHAR(13) NOT NULL CHECK (
+		RFCProveedor <> ''
+		AND (
+			LENGTH(RFCProveedor) = 13
+			OR LENGTH(RFCProveedor) = 12
+		)
+		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor),
+	FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina(IDInsumoMedicina)
+);
+
+
+CREATE TABLE Notificar(
+	idEvento SERIAL,
+	IDVisitante SERIAL,
+	TipoNotificacion VARCHAR(50) NOT NULL CHECK (TipoNotificacion <> ''),
+	FOREIGN KEY (idEvento) REFERENCES Evento(idEvento),
+	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+);
+
 
 CREATE TABLE Trabajar(
 	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
-		RFCVeterinario <> '',
+		RFCVeterinario <> ''
 		AND (
-			LENGTH(RFCVeterinario = 13)
-			OR LENGTH(RFCVeterinario = 12)
+			LENGTH(RFCVeterinario) = 13
+			OR LENGTH(RFCVeterinario) = 12
 		)
 		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
 	),
@@ -263,8 +324,7 @@ CREATE TABLE Trabajar(
 	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
 );
 
---------------- FINAL PARTE ETHAN ---------------------------------
-------------------------------------Parte Gael------------------------------------
+
 CREATE TABLE DistribuirMedicina(
 	IDInsumoMedicina SERIAL,
 	IDBioma SERIAL,
@@ -272,17 +332,6 @@ CREATE TABLE DistribuirMedicina(
 	FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma)
 );
 
-CREATE TABLE Medicina(
-	IDInsumoMedicina SERIAL,
-	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> ''),
-	Cantidad INT NOT NULL,
-	FechaCaducidad DATE NOT NULL,
-	Refrigeracion BOOL NOT NULL,
-	Lote INT NOT NULL,
-	Laboratorio VARCHAR(50) NOT NULL CHECK(Laboratorio <> ''),
-	PRIMARY KEY(IDInsumoMedicina) FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina (IDInsumoMedicina),
-	FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma)
-);
 
 CREATE TABLE Cuidar (
 	RFCCuidador VARCHAR(13) NOT NULL CHECK (
@@ -334,7 +383,7 @@ CREATE TABLE Cuidar (
 		AND DiasTrabajo < 30
 	),
 	HorarioLaboral TIME NOT NULL,
-	Salario DECIMAL NOT NULL (Salario > 0),
+	Salario DECIMAL NOT NULL CHECK(Salario > 0),
 	Genero VARCHAR(10) NOT NULL CHECK (
 		Genero <> ''
 		AND Genero LIKE '%[a-zA-z]'
@@ -361,12 +410,14 @@ CREATE TABLE Cuidar (
 	FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal)
 );
 
+
 CREATE TABLE Comprar(
 	IDVisitante SERIAL,
 	IDServicio SERIAL,
 	FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante),
 	FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
 );
+
 
 CREATE TABLE ProveerAlimento(
 	IDInsumoAlimento SERIAL,
@@ -375,6 +426,7 @@ CREATE TABLE ProveerAlimento(
 	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
 );
 
+
 CREATE TABLE DistribuirAlimento(
 	IDInsumoAlimento SERIAL,
 	IDBioma SERIAL,
@@ -382,162 +434,15 @@ CREATE TABLE DistribuirAlimento(
 	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
 );
 
-------------------------------------Parte Gael Fin------------------------------------
---------------- INICIA PARTE ROGER ---------------
---CorreoCuidador--
-CREATE TABLE CorreoCuidador(
-	RFCCuidador VARCHAR(13) NOT NULL CHECK (
-		RFCCuidador <> '',
-		AND (
-			LENGTH(RFCCuidador = 13)
-			OR LENGTH(RFCCuidador = 12)
-		)
-		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Correo VARCHAR(50) CHECK(
-		Correo LIKE '%@%._%'
-		AND Correo <> ''
-	),
-	PRIMARY KEY(RFCCuidador, Correo)
-);
 
---TelefonoCuidador--
-CREATE TABLE TelefonoCuidador(
-	RFCCuidador VARCHAR(13) NOT NULL CHECK (
-		RFCCuidador <> '',
-		AND (
-			LENGTH(RFCCuidador = 13)
-			OR LENGTH(RFCCuidador = 12)
-		)
-		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Telefono CHAR(10) CHECK(
-		Telefono ~ '^[0-9 ] *$'
-		AND Telefono <> ''
-	),
-	PRIMARY KEY(RFCCuidador, Telefono)
-);
-
---CorreoVisitante--
-CREATE TABLE correovisitante (
-	IDVisitante SERIAL,
-	Correo VARCHAR(50) CHECK(
-		Correo LIKE '%@%._%'
-		AND Correo <> ''
-	),
-	PRIMARY KEY(IdVisitante, Correo)
-);
-
--- TABLAS CON FK
---Jaula--
-CREATE TABLE Jaula(
-	IDJaula SERIAL,
-	IDAnimal INT NOT NULL,
-	PRIMARY KEY(IDJaula),
-	CONSTRAINT fk_animal FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal)
-);
-
---Evento--
-CREATE TABLE Evento(
-	IDEvento SERIAL,
-	IDVisitante INT NOT NULL,
-	TipoEvento VARCHAR(50) NOT NULL CHECK(TipoEvento <> ''),
-	Fecha DATE NOT NULL,
-	Capacidad INT NOT NULL CHECK(Capacidad > 0),
-	PRIMARY KEY(IDEvento),
-	CONSTRAINT fk_visitante FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
-) --Tener--
 CREATE TABLE Tener(
 	IDBioma SERIAL,
 	IDServicio SERIAL,
 	CONSTRAINT fk_idbioma FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma),
 	CONSTRAINT fk_idservicio FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
-) --------------- FIN PARTE ROGER ---------------
---------------- ?Inicio PARTE Luffy ---------------
--- Bioma
-CREATE TABLE Bioma(
-	IDBioma SERIAL,
-	TipoBioma VARCHAR(50) NOT NULL CHECK (
-		TipoBioma IN (
-			'desierto',
-			'pastizales',
-			'franja costera',
-			'aviario',
-			'bosque templado',
-			'bosque tropical'
-		)
-	),
-	PRIMARY KEY(IDBioma)
-);
+)
 
--- Visitante
-CREATE TABLE Visitante(
-	IDVisitante SERIAL,
-	Genero VARCHAR(50) NOT NULL CHECK (
-		Genero <> ''
-		AND Genero LIKE '%[a-zA-Z]%'
-	),
-	Nombre VARCHAR(50) NOT NULL CHECK (
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%'
-	),
-	Paterno VARCHAR(50) NOT NULL CHECK (
-		Paterno <> ''
-		AND Paterno LIKE '%[a-zA-Z]%'
-	),
-	Materno VARCHAR(50) NOT NULL CHECK (
-		Materno <> ''
-		AND Materno LIKE '%[a-zA-Z]%'
-	),
-	PRIMARY KEY(IDVisitante)
-);
 
--- Ticket
-CREATE TABLE Ticket(
-	NumTicket SERIAL,
-	IDVisitante SERIAL,
-	Descuento INT NOT NULL CHECK (
-		Descuento >= 0
-		AND Descuento <= 100
-	),
-	CostoUnitario DECIMAL NOT NULL CHECK (CostoUnitario > 0),
-	TipoServicio VARCHAR(50) NOT NULL CHECK (
-		TipoServicio IN ('baño', 'tienda', 'comida')
-	),
-	Fecha DATE NOT NULL,
-	PRIMARY KEY(NumTicket),
-	CONSTRAINT fk_idvisitante FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
-);
-
--- Animal
-CREATE TABLE Animal(
-	IDAnimal SERIAL,
-	IDBioma SERIAL,
-	IDJaula SERIAL,
-	NombreAnimal VARCHAR(50) NOT NULL CHECK (
-		NombreAnimal <> ''
-		AND NombreAnimal LIKE '%[a-zA-Z]%'
-	),
-	Sexo VARCHAR(50) NOT NULL CHECK (Sexo IN ('macho', 'hembra')),
-	Altura DECIMAL NOT NULL CHECK (Altura > 0),
-	Peso DECIMAL NOT NULL CHECK (Peso > 0),
-	Especie VARCHAR(50) NOT NULL CHECK (
-		Especie <> ''
-		AND Especie LIKE '%[a-zA-Z]%'
-	),
-	Edad INT NOT NULL CHECK (Edad > 0),
-	Alimentacion VARCHAR(50) NOT NULL CHECK (
-		Alimentacion IN (
-			'carnívoro',
-			'herbívoro',
-			'omnívoro'
-		)
-	),
-	PRIMARY KEY(IDAnimal),
-	CONSTRAINT fk_idbioma FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma) CONSTRAINT fk_idjaula FOREIGN KEY (IDJaula) REFERENCES Jaula (IDJaula)
-);
-
--- Atender
 CREATE TABLE Atender(
 	IDAnimal SERIAL,
 	IndicacionesMedicas Text NOT NULL CHECK (
@@ -545,14 +450,136 @@ CREATE TABLE Atender(
 		AND IndicacionesMedicas LIKE '%[a-zA-Z]%'
 	),
 	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
-		RFCVeterinario <> '',
+		RFCVeterinario <> ''
 		AND (
-			LENGTH(RFCVeterinario = 13)
-			OR LENGTH(RFCVeterinario = 12)
+			LENGTH(RFCVeterinario) = 13
+			OR LENGTH(RFCVeterinario) = 12
 		)
 		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
 	),
-	CONSTRAINT fk_idanimal FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal) CONSTRAINT fk_rfcveterinario FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario (RFCVeterinario)
+	FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal),
+	FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario (RFCVeterinario)
 );
 
---------------- ?Fin PARTE Luffy ---------------
+
+------------------------------Telefonos y correos -------------------------------------
+
+CREATE TABLE TelefonoVisitante(
+	IDVisitante SERIAL,
+	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
+	PRIMARY KEY(IDVisitante, Telefono),
+	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+);
+
+
+CREATE TABLE TelefonoProveedor(
+	RFCProveedor VARCHAR(13) NOT NULL CHECK (
+		RFCProveedor <> ''
+		AND (
+			LENGTH(RFCProveedor) = 13
+			OR LENGTH(RFCProveedor) = 12
+		)
+		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
+	PRIMARY KEY(RFCProveedor, Telefono),
+	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
+);
+
+
+CREATE TABLE CorreoProveedor(
+	RFCProveedor VARCHAR(13) NOT NULL CHECK (
+		RFCProveedor <> ''
+		AND (
+			LENGTH(RFCProveedor) = 13
+			OR LENGTH(RFCProveedor) = 12
+		)
+		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	Correo VARCHAR(50) NOT NULL CHECK(Correo LIKE '%_@_%._%'),
+	PRIMARY KEY(RFCProveedor, Correo),
+	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
+);
+
+
+CREATE TABLE CorreoVeterinario(
+	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
+		RFCVeterinario <> ''
+		AND (
+			LENGTH(RFCVeterinario) = 13
+			OR LENGTH(RFCVeterinario) = 12
+		)
+		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	Correo VARCHAR(50) CHECK (
+		Correo LIKE '%_@_%._%'
+		AND Correo <> ''
+	),
+	PRIMARY KEY(RFCVeterinario, Correo),
+	FOREIGN KEY(RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
+);
+
+
+CREATE TABLE TelefonoVeterinario(
+	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
+		RFCVeterinario <> ''
+		AND (
+			LENGTH(RFCVeterinario) = 13
+			OR LENGTH(RFCVeterinario) = 12
+		)
+		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	Telefono CHAR(10) CHECK(
+		Telefono ~ '^[0-9 ]*$'
+		AND Telefono <> ''
+	),
+	PRIMARY KEY(RFCVeterinario, Telefono),
+	FOREIGN KEY(RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
+);
+
+
+CREATE TABLE CorreoCuidador(
+	RFCCuidador VARCHAR(13) NOT NULL CHECK (
+		RFCCuidador <> ''
+		AND (
+			LENGTH(RFCCuidador) = 13
+			OR LENGTH(RFCCuidador) = 12
+		)
+		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	Correo VARCHAR(50) CHECK(
+		Correo LIKE '%@%._%'
+		AND Correo <> ''
+	),
+	PRIMARY KEY(RFCCuidador, Correo),
+	FOREIGN KEY(RFCCuidador) REFERENCES Cuidador(RFCCuidador)
+);
+
+
+CREATE TABLE TelefonoCuidador(
+	RFCCuidador VARCHAR(13) NOT NULL CHECK (
+		RFCCuidador <> ''
+		AND (
+			LENGTH(RFCCuidador) = 13
+			OR LENGTH(RFCCuidador) = 12
+		)
+		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
+	),
+	Telefono CHAR(10) CHECK(
+		Telefono ~ '^[0-9 ] *$'
+		AND Telefono <> ''
+	),
+	PRIMARY KEY(RFCCuidador, Telefono),
+	FOREIGN KEY(RFCCuidador) REFERENCES Cuidador(RFCCuidador)
+);
+
+
+CREATE TABLE correovisitante (
+	IDVisitante SERIAL,
+	Correo VARCHAR(50) CHECK(
+		Correo LIKE '%@%._%'
+		AND Correo <> ''
+	),
+	PRIMARY KEY(IdVisitante, Correo),
+	FOREIGN KEY(IDVisitante) REFERENCES Visitante(IDVisitante)
+);
