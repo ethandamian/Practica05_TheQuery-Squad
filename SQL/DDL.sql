@@ -10,95 +10,207 @@ CREATE SCHEMA public;
 
 CREATE TABLE Servicio(
 	IDServicio SERIAL,
-	TipoServicio VARCHAR(20) NOT NULL CHECK(TipoServicio IN ('baño', 'tienda', 'comida')),
-	PRIMARY KEY (IDServicio)
+	TipoServicio VARCHAR(20)
 );
+
+
+-- RESTRICCIONES DE DOMINIO Servicio
+ALTER TABLE Servicio ADD CONSTRAINT servicio_d1
+CHECK(TipoServicio IN ('baño', 'tienda', 'comida'));
+ALTER TABLE Servicio ALTER COLUMN TipoServicio SET NOT NULL;
+
+-- LLAVES Servicio 
+ALTER TABLE Servicio ADD CONSTRAINT servicio_pk
+PRIMARY KEY (IDServicio);
 
 
 CREATE TABLE Veterinario(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK ( RFCVeterinario <> '' 
-	AND (LENGTH(RFCVeterinario) = 13 OR LENGTH(RFCVeterinario) = 12)
-	AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'),
-	Nombre VARCHAR(50) NOT NULL CHECK(
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%' 
-	),
-	ApellidoPaterno VARCHAR(50) NOT NULL CHECK(
-		ApellidoPaterno <> ''
-		AND ApellidoPaterno LIKE '%[a-zA-Z]%'
-	),
-	ApellidoMaterno VARCHAR(50) NOT NULL CHECK(
-		ApellidoMaterno <> ''
-		AND ApellidoMaterno LIKE '%[a-zA-Z]%'
-	),
-	Calle VARCHAR(50) NOT NULL CHECK(Calle <> ''),
-	NumInterior INT NOT NULL,
-	NumExterior INT NOT NULL,
-	Colonia VARCHAR(50) NOT NULL CHECK(Colonia <> ''),
-	Estado VARCHAR(50) NOT NULL CHECK(
-		Estado <> ''
-		AND Estado LIKE '%[a-zA-Z]%'
-	),
-	FechaInicioContrato DATE NOT NULL,
-	FechaFinContrato DATE NOT NULL,
-	FechaNacimiento DATE NOT NULL,
-	Genero VARCHAR(10) NOT NULL CHECK(
-		Genero <> ''
-		AND Genero LIKE '%[a-zA-Z]%'
-	),
-	Salario DECIMAL NOT NULL CHECK(Salario > 0),
-	Especialidad VARCHAR(50) NOT NULL CHECK(
-		Especialidad <> ''
-		AND Especialidad LIKE '%[a-zA-Z]%'
-	), PRIMARY KEY(RFCVeterinario)
+	RFCVeterinario VARCHAR(13),
+	Nombre VARCHAR(50),
+	ApellidoPaterno VARCHAR(50),
+	ApellidoMaterno VARCHAR(50),
+	Calle VARCHAR(50),
+	NumInterior INT,
+	NumExterior INT,
+	Colonia VARCHAR(50),
+	Estado VARCHAR(50),
+	FechaInicioContrato DATE,
+	FechaFinContrato DATE,
+	FechaNacimiento DATE,
+	Genero VARCHAR(10),
+	Salario DECIMAL,
+	Especialidad VARCHAR(50)
 );
+
+
+-- RESTRICCIONES DE DOMINIO Veterinario
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d1
+CHECK ( RFCVeterinario <> '' 
+	AND (LENGTH(RFCVeterinario) = 13 OR LENGTH(RFCVeterinario) = 12)
+	AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE Veterinario ALTER COLUMN RFCVeterinario SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d2
+CHECK(Nombre <> ''
+	AND Nombre LIKE '%[a-zA-Z]%');
+ALTER TABLE Veterinario ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d3
+CHECK(ApellidoPaterno <> ''
+	AND ApellidoPaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d4
+CHECK(ApellidoMaterno <> ''
+	AND ApellidoMaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Veterinario ADD CONSTRAINT checkApe
+CHECK (
+		(
+			ApellidoPaterno IS NOT NULL
+			OR ApellidoMaterno IS NOT NULL
+		)
+	);
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d5
+CHECK(Calle <> '');
+ALTER TABLE Veterinario ALTER COLUMN Calle SET NOT NULL;
+ALTER TABLE Veterinario ALTER COLUMN NumInterior SET NOT NULL;
+ALTER TABLE Veterinario ALTER COLUMN NumExterior SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d6
+CHECK(Colonia <> '');
+ALTER TABLE Veterinario ALTER COLUMN Colonia SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d7
+CHECK(Estado <> ''
+	AND Estado LIKE '%[a-zA-Z]%');
+ALTER TABLE Veterinario ALTER COLUMN Estado SET NOT NULL;
+ALTER TABLE Veterinario ALTER COLUMN FechaInicioContrato SET NOT NULL;
+ALTER TABLE Veterinario ALTER COLUMN FechaFinContrato SET NOT NULL;
+ALTER TABLE Veterinario ALTER COLUMN FechaNacimiento SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d8
+CHECK(Genero <> ''
+	AND Genero LIKE '%[a-zA-Z]%');
+ALTER TABLE Veterinario ALTER COLUMN Genero SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d9
+CHECK(Salario > 0);
+ALTER TABLE Veterinario ALTER COLUMN Salario SET NOT NULL;
+
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_d10
+CHECK(Especialidad <> ''
+	AND Especialidad LIKE '%[a-zA-Z]%');
+ALTER TABLE Veterinario ALTER COLUMN Especialidad SET NOT NULL;
+
+
+--LLAVES Veterinario
+ALTER TABLE Veterinario ADD CONSTRAINT veterinario_pk
+PRIMARY KEY(RFCVeterinario);
+
+
+
+
+
 
 
 CREATE TABLE Proveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
-		RFCProveedor <> ''
-		AND (
-			LENGTH(RFCProveedor) = 13
-			OR LENGTH(RFCProveedor) = 12
-		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Nombre VARCHAR(50) NOT NULL CHECK(
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%'
-	),
-	ApellidoPaterno VARCHAR(50) NOT NULL CHECK(
-		ApellidoPaterno <> ''
-		AND ApellidoPaterno LIKE '%[a-zA-Z]%'
-	),
-	ApellidoMaterno VARCHAR(50) NOT NULL CHECK(
-		ApellidoMaterno <> ''
-		AND ApellidoMaterno LIKE '%[a-zA-Z]%'
-	),
-	Calle VARCHAR(50) NOT NULL CHECK(Calle <> ''),
-	NumInterior INT NOT NULL,
-	NumExterior INT NOT NULL,
-	Colonia VARCHAR(50) NOT NULL CHECK(Colonia <> ''),
-	Estado VARCHAR(50) NOT NULL CHECK(
-		Estado <> ''
-		AND Estado LIKE '%[a-zA-Z]%'
-	),
-	FechaInicioContrato DATE NOT NULL,
-	FechaFinContrato DATE NOT NULL,
-	FechaNacimiento DATE NOT NULL,
-	Genero VARCHAR(10) NOT NULL CHECK(
-		Genero <> ''
-		AND Genero LIKE '%[a-zA-Z]%'
-	),
-	FrecuenciaServicio INT NOT NULL CHECK(FrecuenciaServicio > 0),
-	CostoServicio INT NOT NULL CHECK(CostoServicio > 0),
-	PRIMARY KEY(RFCProveedor)
+	RFCProveedor VARCHAR(13),
+	Nombre VARCHAR(50),
+	ApellidoPaterno VARCHAR(50),
+	ApellidoMaterno VARCHAR(50),
+	Calle VARCHAR(50),
+	NumInterior INT ,
+	NumExterior INT ,
+	Colonia VARCHAR(50),
+	Estado VARCHAR(50) ,
+	FechaInicioContrato DATE,
+	FechaFinContrato DATE,
+	FechaNacimiento DATE,
+	Genero VARCHAR(10),
+	FrecuenciaServicio INT,
+	CostoServicio INT
 );
+
+
+-- RESTRICCIONES DE DOMINIO Proveedor
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d1
+CHECK ( RFCProveedor <> '' 
+	AND (LENGTH(RFCProveedor) = 13 OR LENGTH(RFCProveedor) = 12)
+	AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE Proveedor ALTER COLUMN RFCProveedor SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d2
+CHECK(Nombre <> ''
+	AND Nombre LIKE '%[a-zA-Z]%');
+ALTER TABLE Proveedor ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d3
+CHECK(ApellidoPaterno <> ''
+	AND ApellidoPaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d4
+CHECK(ApellidoMaterno <> ''
+	AND ApellidoMaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Proveedor ADD CONSTRAINT checkApe
+CHECK (
+		(
+			ApellidoPaterno IS NOT NULL
+			OR ApellidoMaterno IS NOT NULL
+		)
+	);
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d5
+CHECK(Calle <> '');
+ALTER TABLE Proveedor ALTER COLUMN Calle SET NOT NULL;
+ALTER TABLE Proveedor ALTER COLUMN NumInterior SET NOT NULL;
+ALTER TABLE Proveedor ALTER COLUMN NumExterior SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d6
+CHECK(Colonia <> '');
+ALTER TABLE Proveedor ALTER COLUMN Colonia SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d7
+CHECK(Estado <> ''
+	AND Estado LIKE '%[a-zA-Z]%');
+ALTER TABLE Proveedor ALTER COLUMN Estado SET NOT NULL;
+ALTER TABLE Proveedor ALTER COLUMN FechaInicioContrato SET NOT NULL;
+ALTER TABLE Proveedor ALTER COLUMN FechaFinContrato SET NOT NULL;
+ALTER TABLE Proveedor ALTER COLUMN FechaNacimiento SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d8
+CHECK(Genero <> ''
+	AND Genero LIKE '%[a-zA-Z]%');
+ALTER TABLE Proveedor ALTER COLUMN Genero SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d9
+CHECK(FrecuenciaServicio > 0);
+ALTER TABLE Proveedor ALTER COLUMN FrecuenciaServicio SET NOT NULL;
+
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_d10
+CHECK(CostoServicio > 0);
+ALTER TABLE Proveedor ALTER COLUMN CostoServicio SET NOT NULL;
+
+
+--LLAVES Proovedor
+ALTER TABLE Proveedor ADD CONSTRAINT proveedor_pk
+PRIMARY KEY(RFCProveedor);
+
 
 
 CREATE TABLE Bioma(
 	IDBioma SERIAL,
-	TipoBioma VARCHAR(50) NOT NULL CHECK (
+	TipoBioma VARCHAR(50),
+	CantidadJaulas INT
+);
+
+
+-- RESTRICCIONES DE DOMINIO Bioma
+ALTER TABLE Bioma ADD CONSTRAINT bioma_d1
+ CHECK (
 		TipoBioma IN (
 			'desierto',
 			'pastizales',
@@ -107,308 +219,563 @@ CREATE TABLE Bioma(
 			'bosque templado',
 			'bosque tropical'
 		)
-	),
-	PRIMARY KEY(IDBioma)
-);
+	);
+ALTER TABLE Bioma ALTER COLUMN TipoBioma SET NOT NULL;
+
+ALTER TABLE Bioma ADD CONSTRAINT bioma_d2
+CHECK(CantidadJaulas >= 0); 
+ALTER TABLE Bioma ALTER COLUMN CantidadJaulas SET NOT NULL;
+
+-- LLAVES Bioma
+ALTER TABLE Bioma ADD CONSTRAINT bioma_pk
+PRIMARY KEY (IDBioma);
 
 
 CREATE TABLE Alimento(
 	IDInsumoAlimento SERIAL,
-	Nombre VARCHAR(50) NOT NULL CHECK (
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%'
-	),
-	Cantidad INT NOT NULL CHECK(Cantidad > 0),
-	FechaCaducidad DATE NOT NULL CHECK(
-		FechaCaducidad < CURRENT_DATE
-		AND FechaCaducidad >= CURRENT_DATE
-	),
-	Refrigeracion BOOL NOT NULL,
-	TipoAlimento VARCHAR(50) NOT NULL CHECK(TipoAlimento <> ''),
-	PRIMARY KEY(IDInsumoAlimento)
+	Nombre VARCHAR(50),
+	Cantidad INT,
+	FechaCaducidad DATE,
+	Refrigeracion BOOL,
+	TipoAlimento VARCHAR(50)
+	
 );
+
+-- RESTRICCIONES DE DOMINIO Alimento
+ALTER TABLE Alimento ADD CONSTRAINT alimento_d1
+CHECK (Nombre <> ''
+	AND Nombre LIKE '%[a-zA-Z]%');
+ALTER TABLE Alimento ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Alimento ADD CONSTRAINT alimento_d2
+CHECK(Cantidad > 0);
+ALTER TABLE Alimento ALTER COLUMN Cantidad SET NOT NULL;
+ALTER TABLE Alimento ADD CONSTRAINT alimento_d3
+CHECK(FechaCaducidad < CURRENT_DATE
+	AND FechaCaducidad >= CURRENT_DATE);
+ALTER TABLE Alimento ALTER COLUMN FechaCaducidad SET NOT NULL;
+ALTER TABLE Alimento ALTER COLUMN Refrigeracion SET NOT NULL;
+
+ALTER TABLE Alimento ADD CONSTRAINT alimento_d4
+CHECK(TipoAlimento <> '');
+ALTER TABLE Alimento ALTER COLUMN TipoAlimento SET NOT NULL;
+
+--LLAVES Alimento
+ALTER TABLE Alimento ADD CONSTRAINT alimento_pk
+PRIMARY KEY(IDInsumoAlimento);
 
 
 CREATE TABLE Visitante(
 	IDVisitante SERIAL,
-	Genero VARCHAR(50) NOT NULL CHECK (
-		Genero <> ''
-		AND Genero LIKE '%[a-zA-Z]%'
-	),
-	Nombre VARCHAR(50) NOT NULL CHECK (
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%'
-	),
-	Paterno VARCHAR(50) NOT NULL CHECK (
-		Paterno <> ''
-		AND Paterno LIKE '%[a-zA-Z]%'
-	),
-	Materno VARCHAR(50) NOT NULL CHECK (
-		Materno <> ''
-		AND Materno LIKE '%[a-zA-Z]%'
-	),
-	PRIMARY KEY(IDVisitante)
+	Genero VARCHAR(50),
+	Nombre VARCHAR(50),
+	Paterno VARCHAR(50),
+	Materno VARCHAR(50)
 );
+
+-- RESTRICCIONES DE DOMINIO Visitante
+ALTER TABLE Visitante ADD CONSTRAINT visitante_d1
+CHECK (Genero <> ''
+	AND Genero LIKE '%[a-zA-Z]%');
+ALTER TABLE Visitante ALTER COLUMN Genero SET NOT NULL;
+
+ALTER TABLE Visitante ADD CONSTRAINT visitante_d2
+CHECK (Nombre <> ''
+	   AND Nombre LIKE '%[a-zA-Z]%');
+ALTER TABLE Visitante ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Visitante ADD CONSTRAINT visitante_d3
+ CHECK (Paterno <> ''
+		AND Paterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Visitante ADD CONSTRAINT visitante_d4
+ CHECK (Materno <> ''
+		AND Materno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Visitante ADD CONSTRAINT checkApe
+CHECK (
+		(
+			Paterno IS NOT NULL
+			OR Materno IS NOT NULL
+		)
+	);
+
+-- LLAVES Visitante
+ALTER TABLE Visitante ADD CONSTRAINT visitante_pk
+PRIMARY KEY(IDVisitante);
+
 
 
 CREATE TABLE Medicina(
 	IDInsumoMedicina SERIAL,
-	Nombre VARCHAR(50) NOT NULL CHECK(Nombre <> ''),
-	Cantidad INT NOT NULL,
-	FechaCaducidad DATE NOT NULL,
-	Refrigeracion BOOL NOT NULL,
-	Lote INT NOT NULL,
-	Laboratorio VARCHAR(50) NOT NULL CHECK(Laboratorio <> ''),
-	PRIMARY KEY(IDInsumoMedicina)
+	Nombre VARCHAR(50),
+	Cantidad INT,
+	FechaCaducidad DATE,
+	Refrigeracion BOOL,
+	Lote INT,
+	Laboratorio VARCHAR(50)
 );
 
 
------------------------------------Tablas con llaves foráneas -------------------------------------
+-- RESTRICCIONES DE DOMINIO Medicina
+ALTER TABLE Medicina ADD CONSTRAINT medicina_d1
+CHECK(Nombre <> '');
+ALTER TABLE Medicina ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Medicina ALTER COLUMN Cantidad SET NOT NULL;
+
+ALTER TABLE Medicina ALTER COLUMN FechaCaducidad SET NOT NULL;
+
+ALTER TABLE Medicina ALTER COLUMN Refrigeracion SET NOT NULL;
+
+ALTER TABLE Medicina ALTER COLUMN Lote SET NOT NULL;
+
+ALTER TABLE Medicina ADD CONSTRAINT medicina_d2
+CHECK(Laboratorio <> '');
+ALTER TABLE Medicina ALTER COLUMN Laboratorio SET NOT NULL;
+
+-- LLAVES Medicina
+ALTER TABLE Medicina ADD CONSTRAINT medicina_pk
+PRIMARY KEY(IDInsumoMedicina);
+
+
+CREATE TABLE Jaula(
+	IDJaula SERIAL
+);
+
+-- LLAVES Jaula
+ALTER TABLE Jaula ADD CONSTRAINT jaula_pk
+PRIMARY KEY(IDJaula);
+
+-----------------------------------TABLAS CON LLAVES FORANEAS -------------------------------------
 
 CREATE TABLE Cuidador(
-	RFCCuidador VARCHAR(13) NOT NULL CHECK (
-		RFCCuidador <> ''
-		AND (
-			LENGTH(RFCCuidador) = 13
-			OR LENGTH(RFCCuidador) = 12
-		)
-		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
+	RFCCuidador VARCHAR(13),
 	IDBioma SERIAL,
-	Nombre VARCHAR(50) NOT NULL CHECK(
-		Nombre <> ''
-		AND Nombre LIKE '%[a-zA-Z]%'
-	),
-	ApellidoPaterno VARCHAR(50) CHECK(
-		ApellidoPaterno <> ''
-		AND ApellidoPaterno LIKE '%[a-zA-Z]%'
-	),
-	ApellidoMaterno VARCHAR(50) CHECK(
-		ApellidoMaterno <> ''
-		AND ApellidoMaterno LIKE '%[a-zA-Z]%'
-	),
-	CONSTRAINT chk_apellidos CHECK (
+	Nombre VARCHAR(50),
+	ApellidoPaterno VARCHAR(50),
+	ApellidoMaterno VARCHAR(50),
+	Calle VARCHAR(50),
+	NumInterior INT,
+	NumExterior INT,
+	Colonia VARCHAR(50),
+	Estado VARCHAR(50),
+	FechaInicioContrato DATE,
+	FechaFinContrato DATE,
+	FechaNacimiento DATE,
+	Genero VARCHAR(10),
+	DiasTrabajo INT,
+	HorarioLaboral TIME,
+	Salario DECIMAL
+);
+
+
+
+
+-- RESTRICCIONES DE DOMINIO Cuidador
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d1
+CHECK ( RFCCuidador <> '' 
+	AND (LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12)
+	AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE Cuidador ALTER COLUMN RFCCuidador SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d2
+CHECK(Nombre <> ''
+	AND Nombre LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidador ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d3
+CHECK(ApellidoPaterno <> ''
+	AND ApellidoPaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d4
+CHECK(ApellidoMaterno <> ''
+	AND ApellidoMaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Cuidador ADD CONSTRAINT checkApe
+CHECK (
 		(
 			ApellidoPaterno IS NOT NULL
 			OR ApellidoMaterno IS NOT NULL
 		)
-	),
-	Calle VARCHAR(50) NOT NULL CHECK(Calle <> ''),
-	NumInterior INT,
-	NumExterior INT NOT NULL,
-	Colonia VARCHAR(50) NOT NULL CHECK(Colonia <> ''),
-	Estado VARCHAR(50) NOT NULL CHECK(
-		Estado <> ''
-		AND Estado LIKE '%[a-zA-Z]%'
-	),
-	FechaInicioContrato DATE NOT NULL,
-	FechaFinContrato DATE NOT NULL,
-	FechaNacimiento DATE NOT NULL,
-	Genero VARCHAR(10) NOT NULL CHECK(
-		Genero <> ''
-		AND Genero LIKE '%[a-zA-Z]%'
-	),
-	DiasTrabajo INT NOT NULL CHECK(
-		DiasTrabajo > 0
-		AND DiasTrabajo < 30
-	),
-	HorarioLaboral VARCHAR(50) NOT NULL CHECK(HorarioLaboral <> ''),
-	Salario DECIMAL NOT NULL CHECK(Salario > 0),
-	PRIMARY KEY(RFCCuidador),
-	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
-);
+	);
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d5
+CHECK(Calle <> '');
+ALTER TABLE Cuidador ALTER COLUMN Calle SET NOT NULL;
+ALTER TABLE Cuidador ALTER COLUMN NumInterior SET NOT NULL;
+ALTER TABLE Cuidador ALTER COLUMN NumExterior SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d6
+CHECK(Colonia <> '');
+ALTER TABLE Cuidador ALTER COLUMN Colonia SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d7
+CHECK(Estado <> ''
+	AND Estado LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidador ALTER COLUMN Estado SET NOT NULL;
+ALTER TABLE Cuidador ALTER COLUMN FechaInicioContrato SET NOT NULL;
+ALTER TABLE Cuidador ALTER COLUMN FechaFinContrato SET NOT NULL;
+ALTER TABLE Cuidador ALTER COLUMN FechaNacimiento SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d8
+CHECK(Genero <> ''
+	AND Genero LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidador ALTER COLUMN Genero SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d9
+CHECK(DiasTrabajo > 0
+	AND DiasTrabajo < 30);
+ALTER TABLE Cuidador ALTER COLUMN DiasTrabajo SET NOT NULL;	
+	
+ALTER TABLE Cuidador ALTER COLUMN HorarioLaboral SET NOT NULL;
+
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_d11
+CHECK(Salario > 0);
+ALTER TABLE Cuidador ALTER COLUMN Salario SET NOT NULL;
+ 
 
 
-CREATE TABLE Jaula(
-	IDJaula SERIAL,
-	IDAnimal INT NOT NULL,
-	PRIMARY KEY(IDJaula)
-);
+
+--LLAVES Cuidador
+ALTER TABLE Cuidador ADD CONSTRAINT cuidador_pk
+PRIMARY KEY(RFCCuidador);
+
+ALTER TABLE Cuidador ADD CONSTRAINT idbioma_pk
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
 
 
 CREATE TABLE Animal(
 	IDAnimal SERIAL,
 	IDBioma SERIAL,
 	IDJaula SERIAL,
-	NombreAnimal VARCHAR(50) NOT NULL CHECK (
-		NombreAnimal <> ''
-		AND NombreAnimal LIKE '%[a-zA-Z]%'
-	),
-	Sexo VARCHAR(50) NOT NULL CHECK (Sexo IN ('macho', 'hembra')),
-	Altura DECIMAL NOT NULL CHECK (Altura > 0),
-	Peso DECIMAL NOT NULL CHECK (Peso > 0),
-	Especie VARCHAR(50) NOT NULL CHECK (
-		Especie <> ''
-		AND Especie LIKE '%[a-zA-Z]%'
-	),
-	Edad INT NOT NULL CHECK (Edad > 0),
-	Alimentacion VARCHAR(50) NOT NULL CHECK (
+	NombreAnimal VARCHAR(50),
+	Sexo VARCHAR(50),
+	Altura DECIMAL,
+	Peso DECIMAL,
+	Especie VARCHAR(50),
+	Alimentacion VARCHAR(50)
+);
+
+
+-- RESTRICCIONES DE DOMINIO Animal
+ALTER TABLE Animal ADD CONSTRAINT animal_d1
+CHECK (NombreAnimal <> ''
+		AND NombreAnimal LIKE '%[a-zA-Z]%');
+ALTER TABLE Animal ALTER COLUMN NombreAnimal SET NOT NULL;
+
+ALTER TABLE Animal ADD CONSTRAINT animal_d2
+CHECK (Sexo IN ('macho', 'hembra'));
+ALTER TABLE Animal ALTER COLUMN Sexo SET NOT NULL;
+
+ALTER TABLE Animal ADD CONSTRAINT animal_d3
+CHECK (Altura > 0);
+ALTER TABLE Animal ALTER COLUMN Altura SET NOT NULL;
+
+ALTER TABLE Animal ADD CONSTRAINT animal_d4
+CHECK (Peso > 0);
+ALTER TABLE Animal ALTER COLUMN Peso SET NOT NULL;
+
+ALTER TABLE Animal ADD CONSTRAINT animal_d5
+CHECK (Especie <> ''
+		AND Especie LIKE '%[a-zA-Z]%');
+ALTER TABLE Animal ALTER COLUMN Especie SET NOT NULL;
+
+ALTER TABLE Animal ADD CONSTRAINT animal_d7
+CHECK (
 		Alimentacion IN (
 			'carnívoro',
 			'herbívoro',
-			'omnívoro'
-		)
-	),
-	PRIMARY KEY(IDAnimal),
-	FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma),
-	FOREIGN KEY (IDJaula) REFERENCES Jaula (IDJaula)
-);
+			'omnívoro'));
+ALTER TABLE Animal ALTER COLUMN Alimentacion SET NOT NULL;
 
-ALTER TABLE Jaula ADD CONSTRAINT IDAnimal
- FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+-- LLAVES Animal
+ALTER TABLE Animal ADD CONSTRAINT animal_pk
+PRIMARY KEY(IDAnimal);
+
+ALTER TABLE Animal ADD CONSTRAINT idbioma_fk
+FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma);
+
+ALTER TABLE Animal ADD CONSTRAINT idjaula_fk
+FOREIGN KEY (IDJaula) REFERENCES Jaula (IDJaula);
+
+		
 
 
 CREATE TABLE Evento(
 	IDEvento SERIAL,
-	IDVisitante INT NOT NULL,
-	TipoEvento VARCHAR(50) NOT NULL CHECK(TipoEvento <> ''),
-	Fecha DATE NOT NULL,
-	Capacidad INT NOT NULL CHECK(Capacidad > 0),
-	PRIMARY KEY(IDEvento),
-	CONSTRAINT fk_visitante FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
-) 
+	IDVisitante SERIAL,
+	TipoEvento VARCHAR(50),
+	Fecha DATE,
+	Capacidad INT
+); 
+
+-- RESTRICCIONES DE DOMINIO Evento
+ALTER TABLE Evento ADD CONSTRAINT evento_d1
+CHECK(TipoEvento <> '');
+ALTER TABLE Evento ALTER COLUMN TipoEvento SET NOT NULL;
+
+ALTER TABLE Evento ALTER COLUMN Fecha SET NOT NULL;
+
+ALTER TABLE Evento ADD CONSTRAINT evento_d2
+CHECK(Capacidad > 0);
+
+ALTER TABLE Evento ALTER COLUMN Capacidad SET NOT NULL;
+
+--LLAVES Evento
+ALTER TABLE Evento ADD CONSTRAINT evento_pk
+PRIMARY KEY(IDEvento);
+
+ALTER TABLE Evento ADD CONSTRAINT idvisitante_fk
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
 
 
 CREATE TABLE Ticket(
 	NumTicket SERIAL,
 	IDVisitante SERIAL,
-	Descuento INT NOT NULL CHECK (
-		Descuento >= 0
-		AND Descuento <= 100
-	),
-	CostoUnitario DECIMAL NOT NULL CHECK (CostoUnitario > 0),
-	TipoServicio VARCHAR(50) NOT NULL CHECK (
-		TipoServicio IN ('baño', 'tienda', 'comida')
-	),
-	Fecha DATE NOT NULL,
-	PRIMARY KEY(NumTicket),
-	CONSTRAINT fk_idvisitante FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+	Descuento INT,
+	CostoUnitario DECIMAL,
+	TipoServicio VARCHAR(50),
+	Fecha DATE
 );
+
+
+-- RESTRICCIONES DE DOMINIO Ticket
+ALTER TABLE Ticket ADD CONSTRAINT ticket_d1
+CHECK (Descuento >= 0
+	AND Descuento <= 100);
+ALTER TABLE Ticket ALTER COLUMN Descuento SET NOT NULL;
+
+ALTER TABLE Ticket ADD CONSTRAINT ticket_d2
+CHECK (CostoUnitario > 0);
+ALTER TABLE Ticket ALTER COLUMN CostoUnitario SET NOT NULL;
+
+ALTER TABLE Ticket ADD CONSTRAINT ticket_d3
+CHECK (TipoServicio IN ('baño', 'tienda', 'comida'));
+ALTER TABLE Ticket ALTER COLUMN TipoServicio SET NOT NULL;
+
+ALTER TABLE Ticket ALTER COLUMN Fecha SET NOT NULL;
+
+--LLAVES Ticket
+ALTER TABLE Ticket ADD CONSTRAINT ticket_pk
+PRIMARY KEY(NumTicket);
+
+ALTER TABLE Ticket ADD CONSTRAINT idvisitante_fk
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+
 
 
 CREATE TABLE ProveerMedicina(
 	IDInsumoMedicina SERIAL,
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
+	RFCProveedor VARCHAR(13)
+);
+
+-- RESTRICCIONES DE DOMINIO ProveerMedicina
+ALTER TABLE ProveerMedicina ADD CONSTRAINT proveerMedicina_d1
+ CHECK (
 		RFCProveedor <> ''
 		AND (
 			LENGTH(RFCProveedor) = 13
 			OR LENGTH(RFCProveedor) = 12
 		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor),
-	FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina(IDInsumoMedicina)
-);
+		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE ProveerMedicina ALTER COLUMN RFCProveedor SET NOT NULL;
+
+
+-- LLAVES ProveerMedicina
+ALTER TABLE ProveerMedicina ADD CONSTRAINT rfcProveedor_fk
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
+
+ALTER TABLE ProveerMedicina ADD CONSTRAINT idinsumoMedicina_fk
+FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina(IDInsumoMedicina);
 
 
 CREATE TABLE Notificar(
 	idEvento SERIAL,
 	IDVisitante SERIAL,
-	TipoNotificacion VARCHAR(50) NOT NULL CHECK (TipoNotificacion <> ''),
-	FOREIGN KEY (idEvento) REFERENCES Evento(idEvento),
-	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+	TipoNotificacion VARCHAR(50)
+	
 );
+
+-- RESTRICCIONES DE DOMINIO Notificar
+ALTER TABLE Notificar ADD CONSTRAINT notificar_d1
+CHECK (TipoNotificacion <> '');
+ALTER TABLE Notificar ALTER COLUMN TipoNotificacion SET NOT NULL;
+
+--LLAVES DE Notificar
+ALTER TABLE Notificar ADD CONSTRAINT idevento_fk
+FOREIGN KEY (idEvento) REFERENCES Evento(idEvento);
+
+ALTER TABLE Notificar ADD CONSTRAINT idvisitante_fk
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
 
 
 CREATE TABLE Trabajar(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
+	RFCVeterinario VARCHAR(13),
+	IDBioma SERIAL
+);
+
+-- RESTRICCIONES DE DOMINIO Trabajar
+ALTER TABLE Trabajar ADD CONSTRAINT trabajar_d1
+CHECK (
 		RFCVeterinario <> ''
 		AND (
 			LENGTH(RFCVeterinario) = 13
 			OR LENGTH(RFCVeterinario) = 12
 		)
-		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	IDBioma SERIAL,
-	FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario),
-	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
-);
+		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE Trabajar ALTER COLUMN RFCVeterinario SET NOT NULL;
+
+-- LLAVES Trabajar
+ALTER TABLE Trabajar ADD CONSTRAINT rfcveterinario_fk
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
+
+ALTER TABLE Trabajar ADD CONSTRAINT idBioma_fk
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
 
 
 CREATE TABLE DistribuirMedicina(
 	IDInsumoMedicina SERIAL,
-	IDBioma SERIAL,
-	FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina (IDInsumoMedicina),
-	FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma)
+	IDBioma SERIAL
 );
+
+--LLAVES DistribuirMedicina
+ALTER TABLE DistribuirMedicina ADD CONSTRAINT idinsumoMedicina_fk
+FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina (IDInsumoMedicina);
+
+ALTER TABLE DistribuirMedicina ADD CONSTRAINT idbioma_fk
+FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma);
 
 
 CREATE TABLE Cuidar (
-	RFCCuidador VARCHAR(13) NOT NULL CHECK (
-		RFCCuidador <> ''
-		AND (
-			LENGTH(RFCCuidador) = 13
-			OR LENGTH(RFCCuidador) = 12
-		)
-		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	IDAnimal INT NOT NULL,
-	Nombre VARCHAR(50) NOT NULL CHECK (
-		Nombre <> ''
-		and Nombre like '%[a-zA-z]'
-	),
-	ApellidoPaterno VARCHAR(50) CHECK (
-		ApellidoPaterno <> ''
-		and ApellidoPaterno like '%[a-zA-z]'
-	),
-	ApellidoMaterno VARCHAR(50) CHECK (
-		ApellidoPaterno <> ''
-		and ApellidoPaterno like '%[a-zA-z]'
-	),
-	-- Restricción CHECK que permite ambos apellidos o uno de ellos
-	CONSTRAINT chk_apellidos CHECK (
+	RFCCuidador VARCHAR(13),
+	IDAnimal SERIAL,
+	Nombre VARCHAR(50),
+	ApellidoPaterno VARCHAR(50),
+	ApellidoMaterno VARCHAR(50),
+	Calle VARCHAR(50),
+	NumInterior INT,
+	NumExterior INT,
+	Colonia VARCHAR(50),
+	Estado VARCHAR(50),
+	FechaInicioContrato DATE,
+	FechaFinContrato DATE,
+	FechaNacimiento DATE,
+	DiasTrabajo INT,
+	HorarioLaboral TIME,
+	Salario DECIMAL,
+	Genero VARCHAR(10),
+	Sexo VARCHAR(10),
+	Altura DECIMAL,
+	Peso DECIMAL,
+	Especie VARCHAR(50),
+	NombreAnimal VARCHAR(50),
+	Alimentacion VARCHAR(50)
+	
+);
+
+-- RESTRICCIONES DE DOMINIO Cuidar
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d1
+CHECK ( RFCCuidador <> '' 
+	AND (LENGTH(RFCCuidador) = 13 OR LENGTH(RFCCuidador) = 12)
+	AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE Cuidar ALTER COLUMN RFCCuidador SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d2
+CHECK(Nombre <> ''
+	AND Nombre LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidar ALTER COLUMN Nombre SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d3
+CHECK(ApellidoPaterno <> ''
+	AND ApellidoPaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d4
+CHECK(ApellidoMaterno <> ''
+	AND ApellidoMaterno LIKE '%[a-zA-Z]%');
+
+ALTER TABLE Cuidar ADD CONSTRAINT checkApe
+CHECK (
 		(
 			ApellidoPaterno IS NOT NULL
 			OR ApellidoMaterno IS NOT NULL
 		)
-	),
-	Calle VARCHAR(50) NOT NULL CHECK (
-		Calle <> ''
-		AND Calle LIKE '%[a-zA-z]'
-	),
-	NumInterior INT CHECK(NumInterior > 0),
-	NumExterior INT NOT NULL,
-	Colonia VARCHAR(50) NOT NULL CHECK (
-		Colonia <> ''
-		AND Colonia LIKE '%[a-zA-z]'
-	),
-	Estado VARCHAR(50) NOT NULL CHECK (
-		Estado <> ''
-		AND Estado LIKE '%[a-zA-z]'
-	),
-	FechaInicioContrato DATE NOT NULL,
-	FechaFinContrato DATE,
-	DiasTrabajo INT NOT NULL CHECK(
-		DiasTrabajo > 0
-		AND DiasTrabajo < 30
-	),
-	HorarioLaboral TIME NOT NULL,
-	Salario DECIMAL NOT NULL CHECK(Salario > 0),
-	Genero VARCHAR(10) NOT NULL CHECK (
-		Genero <> ''
-		AND Genero LIKE '%[a-zA-z]'
-	),
-	Sexo VARCHAR(10) NOT NULL CHECK (
-		Sexo <> ''
-		AND Sexo LIKE '%[a-zA-z]'
-	),
-	Altura DECIMAL NOT NULL,
-	Peso DECIMAL NOT NULL,
-	Especie VARCHAR(50) NOT NULL CHECK (
-		Especie <> ''
-		AND Especie LIKE '%[a-zA-z]'
-	),
-	NombreAnimal VARCHAR(50) NOT NULL CHECK (
-		NombreAnimal <> ''
-		AND NombreAnimal LIKE '%[a-zA-z]'
-	),
-	Alimentacion VARCHAR(50) NOT NULL CHECK (
-		Alimentacion <> ''
-		AND Alimentacion LIKE '%[a-zA-z]'
-	),
-	FOREIGN KEY (RFCCuidador) REFERENCES Cuidador (RFCCuidador),
-	FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal)
-);
+	);
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d5
+CHECK(Calle <> '');
+ALTER TABLE Cuidar ALTER COLUMN Calle SET NOT NULL;
+ALTER TABLE Cuidar ALTER COLUMN NumInterior SET NOT NULL;
+ALTER TABLE Cuidar ALTER COLUMN NumExterior SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d6
+CHECK(Colonia <> '');
+ALTER TABLE Cuidar ALTER COLUMN Colonia SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d7
+CHECK(Estado <> ''
+	AND Estado LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidar ALTER COLUMN Estado SET NOT NULL;
+ALTER TABLE Cuidar ALTER COLUMN FechaInicioContrato SET NOT NULL;
+ALTER TABLE Cuidar ALTER COLUMN FechaFinContrato SET NOT NULL;
+ALTER TABLE Cuidar ALTER COLUMN FechaNacimiento SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d8
+CHECK(Genero <> ''
+	AND Genero LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidar ALTER COLUMN Genero SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d9
+CHECK(DiasTrabajo > 0
+	AND DiasTrabajo < 30);
+ALTER TABLE Cuidar ALTER COLUMN DiasTrabajo SET NOT NULL;	
+	
+ALTER TABLE Cuidar ALTER COLUMN HorarioLaboral SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d11
+CHECK(Salario > 0);
+ALTER TABLE Cuidar ALTER COLUMN Salario SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d12
+CHECK (NombreAnimal <> ''
+		AND NombreAnimal LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidar ALTER COLUMN NombreAnimal SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d13
+CHECK (Sexo IN ('macho', 'hembra'));
+ALTER TABLE Cuidar ALTER COLUMN Sexo SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d14
+CHECK (Altura > 0);
+ALTER TABLE Cuidar ALTER COLUMN Altura SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d15
+CHECK (Peso > 0);
+ALTER TABLE Cuidar ALTER COLUMN Peso SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d16
+CHECK (Especie <> ''
+		AND Especie LIKE '%[a-zA-Z]%');
+ALTER TABLE Cuidar ALTER COLUMN Especie SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d17
+CHECK (Edad > 0);
+ALTER TABLE Cuidar ALTER COLUMN Edad SET NOT NULL;
+
+ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d18
+CHECK (
+		Alimentacion IN (
+			'carnívoro',
+			'herbívoro',
+			'omnívoro'));
+ALTER TABLE Cuidar ALTER COLUMN Alimentacion SET NOT NULL;
+
+-- LLAVES Cuidar
+ALTER TABLE Cuidar ADD CONSTRAINT rfcCuidador_fk
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador (RFCCuidador);
+
+ALTER TABLE Cuidar ADD CONSTRAINT idanimal_fk
+FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+ 
 
 
 CREATE TABLE Comprar(
@@ -440,7 +807,7 @@ CREATE TABLE Tener(
 	IDServicio SERIAL,
 	CONSTRAINT fk_idbioma FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma),
 	CONSTRAINT fk_idservicio FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
-)
+);
 
 
 CREATE TABLE Atender(
@@ -574,7 +941,7 @@ CREATE TABLE TelefonoCuidador(
 );
 
 
-CREATE TABLE correovisitante (
+CREATE TABLE CorreoVisitante (
 	IDVisitante SERIAL,
 	Correo VARCHAR(50) CHECK(
 		Correo LIKE '%@%._%'
@@ -582,4 +949,11 @@ CREATE TABLE correovisitante (
 	),
 	PRIMARY KEY(IdVisitante, Correo),
 	FOREIGN KEY(IDVisitante) REFERENCES Visitante(IDVisitante)
+);
+
+CREATE TABLE Visitar(
+	IDEvento SERIAL,
+	IDVisitante SERIAL,
+	FOREIGN KEY (IDEvento) REFERENCES Evento(IDEvento),
+	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
 );
