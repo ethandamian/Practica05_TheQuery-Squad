@@ -757,10 +757,6 @@ CHECK (Especie <> ''
 		AND Especie LIKE '%[a-zA-Z]%');
 ALTER TABLE Cuidar ALTER COLUMN Especie SET NOT NULL;
 
-ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d17
-CHECK (Edad > 0);
-ALTER TABLE Cuidar ALTER COLUMN Edad SET NOT NULL;
-
 ALTER TABLE Cuidar ADD CONSTRAINT cuidar_d18
 CHECK (
 		Alimentacion IN (
@@ -780,180 +776,314 @@ FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
 
 CREATE TABLE Comprar(
 	IDVisitante SERIAL,
-	IDServicio SERIAL,
-	FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante),
-	FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
+	IDServicio SERIAL
 );
+
+--LLAVES Comprar
+ALTER TABLE Comprar ADD CONSTRAINT idvisitante_fk
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+
+ALTER TABLE Comprar ADD CONSTRAINT idservicio_fk
+FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio);
+
+
+
 
 
 CREATE TABLE ProveerAlimento(
 	IDInsumoAlimento SERIAL,
-	RFCProveedor VARCHAR(13),
-	FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento),
-	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
+	RFCProveedor VARCHAR(13)
 );
+
+-- LLAVES ProveerAlimento
+ALTER TABLE ProveerAlimento ADD CONSTRAINT idinsumoAlimento_fk
+FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento);
+
+ALTER TABLE ProveerAlimento ADD CONSTRAINT rfcProveedor_fk
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
 
 
 CREATE TABLE DistribuirAlimento(
 	IDInsumoAlimento SERIAL,
-	IDBioma SERIAL,
-	FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento),
-	FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
+	IDBioma SERIAL
+	
 );
+
+
+-- LLAVES DistribuirAlimento
+ALTER TABLE DistribuirAlimento ADD CONSTRAINT idinsumoAlimento_fk
+FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento);
+
+ALTER TABLE DistribuirAlimento ADD CONSTRAINT idbioma_fk
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
 
 
 CREATE TABLE Tener(
 	IDBioma SERIAL,
-	IDServicio SERIAL,
-	CONSTRAINT fk_idbioma FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma),
-	CONSTRAINT fk_idservicio FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
+	IDServicio SERIAL
+	
 );
+
+-- LLAVES Tener
+ALTER TABLE Tener ADD CONSTRAINT idbioma_fk
+FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma);
+
+ALTER TABLE Tener ADD CONSTRAINT idservicio_fk
+FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio);
 
 
 CREATE TABLE Atender(
 	IDAnimal SERIAL,
-	IndicacionesMedicas Text NOT NULL CHECK (
-		IndicacionesMedicas <> ''
-		AND IndicacionesMedicas LIKE '%[a-zA-Z]%'
-	),
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
-		RFCVeterinario <> ''
+	IndicacionesMedicas Text,
+	RFCVeterinario VARCHAR(13)
+	
+);
+
+-- RESTRICCIONES DE DOMINIO Atender
+ALTER TABLE Atender ADD CONSTRAINT atender_d1
+CHECK (IndicacionesMedicas <> ''
+		AND IndicacionesMedicas LIKE '%[a-zA-Z]%');
+ALTER TABLE Atender ALTER COLUMN IndicacionesMedicas SET NOT NULL;
+
+ALTER TABLE Atender ADD CONSTRAINT atender_d2
+CHECK (RFCVeterinario <> ''
 		AND (
 			LENGTH(RFCVeterinario) = 13
 			OR LENGTH(RFCVeterinario) = 12
 		)
-		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal),
-	FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario (RFCVeterinario)
-);
+		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE Atender ALTER COLUMN RFCVeterinario SET NOT NULL;
 
+-- LLAVES Atender
+ALTER TABLE Atender ADD CONSTRAINT idanimal_fk
+FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+
+ALTER TABLE Atender ADD CONSTRAINT rfcVeterinario_fk
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario (RFCVeterinario);
 
 ------------------------------Telefonos y correos -------------------------------------
 
 CREATE TABLE TelefonoVisitante(
 	IDVisitante SERIAL,
-	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
-	PRIMARY KEY(IDVisitante, Telefono),
-	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+	Telefono CHAR(10)
+	
 );
+
+-- RESTRICCIONES DE DOMINIO TelefonoVisitante
+ALTER TABLE TelefonoVisitante ADD CONSTRAINT telefonoVisitante_d1
+CHECK(Telefono SIMILAR TO '[0-9]+');
+ALTER TABLE TelefonoVisitante ALTER COLUMN Telefono SET NOT NULL;
+
+-- LLAVES TelefonoVisitante
+ALTER TABLE TelefonoVisitante ADD CONSTRAINT telefonoVisitante_pk
+PRIMARY KEY(IDVisitante, Telefono);
+
+ALTER TABLE TelefonoVisitante ADD CONSTRAINT idVisitante_fk
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+
 
 
 CREATE TABLE TelefonoProveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
+	RFCProveedor VARCHAR(13),
+	Telefono CHAR(10)
+);
+
+
+-- RESTRICCIONES DE DOMINIO TelefonoProveedor
+ALTER TABLE TelefonoProveedor ADD CONSTRAINT telefonoProveedor_d1
+CHECK(Telefono SIMILAR TO '[0-9]+');
+ALTER TABLE TelefonoProveedor ALTER COLUMN Telefono SET NOT NULL;
+
+ALTER TABLE TelefonoProveedor ADD CONSTRAINT telefonoProveedor_d2
+CHECK (
 		RFCProveedor <> ''
 		AND (
 			LENGTH(RFCProveedor) = 13
 			OR LENGTH(RFCProveedor) = 12
 		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Telefono CHAR(10) NOT NULL CHECK(Telefono SIMILAR TO '[0-9]+'),
-	PRIMARY KEY(RFCProveedor, Telefono),
-	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
-);
+		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE TelefonoProveedor ALTER COLUMN RFCProveedor SET NOT NULL;
+
+-- LLAVES TelefonoProveedor
+ALTER TABLE TelefonoProveedor ADD CONSTRAINT telefonoProveedor_pk
+PRIMARY KEY(RFCProveedor, Telefono);
+
+ALTER TABLE TelefonoProveedor ADD CONSTRAINT rfcProveedor_fk
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
 
 
 CREATE TABLE CorreoProveedor(
-	RFCProveedor VARCHAR(13) NOT NULL CHECK (
+	RFCProveedor VARCHAR(13),
+	Correo VARCHAR(50)
+);
+
+-- RESTRICCIONES DE DOMINIO CorreoProveedor
+ALTER TABLE CorreoProveedor ADD CONSTRAINT correoProveedor_d1
+CHECK (
 		RFCProveedor <> ''
 		AND (
 			LENGTH(RFCProveedor) = 13
 			OR LENGTH(RFCProveedor) = 12
 		)
-		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Correo VARCHAR(50) NOT NULL CHECK(Correo LIKE '%_@_%._%'),
-	PRIMARY KEY(RFCProveedor, Correo),
-	FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
-);
+		AND RFCProveedor SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE CorreoProveedor ALTER COLUMN RFCProveedor SET NOT NULL;	
+
+ALTER TABLE CorreoProveedor ADD CONSTRAINT correoProveedor_d2
+CHECK(Correo LIKE '%_@_%._%');
+ALTER TABLE CorreoProveedor ALTER COLUMN Correo SET NOT NULL;
+
+-- LLAVES DE CorreoProveedor
+ALTER TABLE CorreoProveedor ADD CONSTRAINT correoProveedor_pk
+PRIMARY KEY(RFCProveedor, Correo);
+
+ALTER TABLE CorreoProveedor ADD CONSTRAINT rfcProveedor_fk
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
 
 
 CREATE TABLE CorreoVeterinario(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
+	RFCVeterinario VARCHAR(13),
+	Correo VARCHAR(50)
+);
+
+-- RESTRICCIONES DE DOMINIO CorreoVeterinario
+ALTER TABLE CorreoVeterinario ADD CONSTRAINT correoVeterinario_d1
+CHECK (
 		RFCVeterinario <> ''
 		AND (
 			LENGTH(RFCVeterinario) = 13
 			OR LENGTH(RFCVeterinario) = 12
 		)
-		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Correo VARCHAR(50) CHECK (
-		Correo LIKE '%_@_%._%'
-		AND Correo <> ''
-	),
-	PRIMARY KEY(RFCVeterinario, Correo),
-	FOREIGN KEY(RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
-);
+		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE CorreoVeterinario ALTER COLUMN RFCVeterinario SET NOT NULL;	
+
+ALTER TABLE CorreoVeterinario ADD CONSTRAINT correoVeterinario_d2
+CHECK(Correo LIKE '%_@_%._%');
+ALTER TABLE CorreoVeterinario ALTER COLUMN Correo SET NOT NULL;
+
+-- LLAVES DE CorreoVeterinario
+ALTER TABLE CorreoVeterinario ADD CONSTRAINT correoVeterinario_pk
+PRIMARY KEY(RFCVeterinario, Correo);
+
+ALTER TABLE CorreoVeterinario ADD CONSTRAINT rfcVeterinario_fk
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
 
 
 CREATE TABLE TelefonoVeterinario(
-	RFCVeterinario VARCHAR(13) NOT NULL CHECK (
+	RFCVeterinario VARCHAR(13),
+	Telefono CHAR(10)
+);
+
+
+-- RESTRICCIONES DE DOMINIO TelefonoVeterinario
+ALTER TABLE TelefonoVeterinario ADD CONSTRAINT telefonoVeterinario_d1
+CHECK(Telefono SIMILAR TO '[0-9]+');
+ALTER TABLE TelefonoVeterinario ALTER COLUMN Telefono SET NOT NULL;
+
+ALTER TABLE TelefonoVeterinario ADD CONSTRAINT telefonoVeterinario_d2
+CHECK (
 		RFCVeterinario <> ''
 		AND (
 			LENGTH(RFCVeterinario) = 13
 			OR LENGTH(RFCVeterinario) = 12
 		)
-		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Telefono CHAR(10) CHECK(
-		Telefono ~ '^[0-9 ]*$'
-		AND Telefono <> ''
-	),
-	PRIMARY KEY(RFCVeterinario, Telefono),
-	FOREIGN KEY(RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
-);
+		AND RFCVeterinario SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE TelefonoVeterinario ALTER COLUMN RFCVeterinario SET NOT NULL;
+
+-- LLAVES TelefonoVeterinario
+ALTER TABLE TelefonoVeterinario ADD CONSTRAINT telefonoVeterinario_pk
+PRIMARY KEY(RFCVeterinario, Telefono);
+
+ALTER TABLE TelefonoVeterinario ADD CONSTRAINT rfcVeterinario_fk
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
 
 
 CREATE TABLE CorreoCuidador(
-	RFCCuidador VARCHAR(13) NOT NULL CHECK (
+	RFCCuidador VARCHAR(13),
+	Correo VARCHAR(50)
+);
+
+-- RESTRICCIONES DE DOMINIO CorreoCuidador
+ALTER TABLE CorreoCuidador ADD CONSTRAINT correoCuidador_d1
+CHECK (
 		RFCCuidador <> ''
 		AND (
 			LENGTH(RFCCuidador) = 13
 			OR LENGTH(RFCCuidador) = 12
 		)
-		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Correo VARCHAR(50) CHECK(
-		Correo LIKE '%@%._%'
-		AND Correo <> ''
-	),
-	PRIMARY KEY(RFCCuidador, Correo),
-	FOREIGN KEY(RFCCuidador) REFERENCES Cuidador(RFCCuidador)
-);
+		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE CorreoCuidador ALTER COLUMN RFCCuidador SET NOT NULL;	
+
+ALTER TABLE CorreoCuidador ADD CONSTRAINT correoCuidador_d2
+CHECK(Correo LIKE '%_@_%._%');
+ALTER TABLE CorreoCuidador ALTER COLUMN Correo SET NOT NULL;
+
+-- LLAVES DE CorreoCuidador
+ALTER TABLE CorreoCuidador ADD CONSTRAINT correoCuidador_pk
+PRIMARY KEY(RFCCuidador, Correo);
+
+ALTER TABLE CorreoCuidador ADD CONSTRAINT rfcCuidador_fk
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador(RFCCuidador);
+
 
 
 CREATE TABLE TelefonoCuidador(
-	RFCCuidador VARCHAR(13) NOT NULL CHECK (
+	RFCCuidador VARCHAR(13),
+	Telefono CHAR(10)
+);
+
+
+-- RESTRICCIONES DE DOMINIO TelefonoCuidador
+ALTER TABLE TelefonoCuidador ADD CONSTRAINT telefonoCuidador_d1
+CHECK(Telefono SIMILAR TO '[0-9]+');
+ALTER TABLE TelefonoCuidador ALTER COLUMN Telefono SET NOT NULL;
+
+ALTER TABLE TelefonoCuidador ADD CONSTRAINT telefonoCuidador_d2
+CHECK (
 		RFCCuidador <> ''
 		AND (
 			LENGTH(RFCCuidador) = 13
 			OR LENGTH(RFCCuidador) = 12
 		)
-		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}'
-	),
-	Telefono CHAR(10) CHECK(
-		Telefono ~ '^[0-9 ] *$'
-		AND Telefono <> ''
-	),
-	PRIMARY KEY(RFCCuidador, Telefono),
-	FOREIGN KEY(RFCCuidador) REFERENCES Cuidador(RFCCuidador)
-);
+		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
+ALTER TABLE TelefonoCuidador ALTER COLUMN RFCCuidador SET NOT NULL;
+
+-- LLAVES TelefonoVeterinario
+ALTER TABLE TelefonoCuidador ADD CONSTRAINT telefonoCuidador_pk
+PRIMARY KEY(RFCCuidador, Telefono);
+
+ALTER TABLE TelefonoCuidador ADD CONSTRAINT rfcCuidador_fk
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador(RFCCuidador);
 
 
 CREATE TABLE CorreoVisitante (
 	IDVisitante SERIAL,
-	Correo VARCHAR(50) CHECK(
-		Correo LIKE '%@%._%'
-		AND Correo <> ''
-	),
-	PRIMARY KEY(IdVisitante, Correo),
-	FOREIGN KEY(IDVisitante) REFERENCES Visitante(IDVisitante)
+	Correo VARCHAR(50)
 );
+
+--RESTRICCIONES DE DOMINIO CorreoVisitante
+ALTER TABLE CorreoVisitante ADD CONSTRAINT correoVisitante_d1
+CHECK(Correo LIKE '%@%._%'
+	AND Correo <> '');
+
+-- LLAVES CorreoVisitante
+ALTER TABLE CorreoVisitante ADD CONSTRAINT correoVisitante_pk
+PRIMARY KEY(IdVisitante, Correo);
+
+ALTER TABLE CorreoVisitante ADD CONSTRAINT idVisitante_fk
+FOREIGN KEY(IDVisitante) REFERENCES Visitante(IDVisitante);
 
 CREATE TABLE Visitar(
 	IDEvento SERIAL,
-	IDVisitante SERIAL,
-	FOREIGN KEY (IDEvento) REFERENCES Evento(IDEvento),
-	FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+	IDVisitante SERIAL
 );
+
+-- LLAVES Visitar
+ALTER TABLE Visitar ADD CONSTRAINT idEvento_fk
+FOREIGN KEY (IDEvento) REFERENCES Evento(IDEvento);
+
+ALTER TABLE Visitar ADD CONSTRAINT idVisitante_fk
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+
+
+
+
