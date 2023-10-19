@@ -733,7 +733,8 @@ ALTER TABLE Evento ADD CONSTRAINT evento_pk
 PRIMARY KEY(IDEvento);
 
 ALTER TABLE Evento ADD CONSTRAINT idvisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 --COMMENT Evento
 COMMENT ON TABLE Evento IS 'Tabla que contiene la informacion de los eventos';
@@ -780,7 +781,8 @@ ALTER TABLE Ticket ADD CONSTRAINT ticket_pk
 PRIMARY KEY(NumTicket);
 
 ALTER TABLE Ticket ADD CONSTRAINT idvisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 --COMMENT Ticket
 COMMENT ON TABLE Ticket IS 'Tabla que contiene la informacion de los tickets';
@@ -882,10 +884,12 @@ ALTER TABLE Trabajar ALTER COLUMN RFCVeterinario SET NOT NULL;
 
 -- LLAVES Trabajar
 ALTER TABLE Trabajar ADD CONSTRAINT rfcveterinario_fk
-FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Trabajar ADD CONSTRAINT idBioma_fk
-FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- COMMENT Trabajar
 COMMENT ON TABLE Trabajar IS 'Tabla de la relación Trabajar';
@@ -1042,10 +1046,12 @@ ALTER TABLE Cuidar ALTER COLUMN Alimentacion SET NOT NULL;
 
 -- LLAVES Cuidar
 ALTER TABLE Cuidar ADD CONSTRAINT rfcCuidador_fk
-FOREIGN KEY (RFCCuidador) REFERENCES Cuidador (RFCCuidador);
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador (RFCCuidador)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Cuidar ADD CONSTRAINT idanimal_fk
-FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- COMMENTS Cuidar
 COMMENT ON TABLE Cuidar IS 'Tabla que contiene la informacion de los cuidadores y los animales que cuidan';
@@ -1251,7 +1257,8 @@ ALTER TABLE TelefonoVisitante ADD CONSTRAINT telefonoVisitante_pk
 PRIMARY KEY(IDVisitante, Telefono);
 
 ALTER TABLE TelefonoVisitante ADD CONSTRAINT idVisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 --COMMENT TelefonoVisitante
 COMMENT ON TABLE TelefonoVisitante IS 'Tabla que contiene los telefonos de los visitantes';
