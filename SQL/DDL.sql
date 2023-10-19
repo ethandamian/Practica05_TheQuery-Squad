@@ -1348,13 +1348,25 @@ CHECK (
 		AND RFCCuidador SIMILAR TO '[A-Z]{4}[0-9]{6}[A-Z0-9]{2,3}');
 ALTER TABLE TelefonoCuidador ALTER COLUMN RFCCuidador SET NOT NULL;
 
--- LLAVES TelefonoVeterinario
+-- LLAVES TelefonoCuidador
 ALTER TABLE TelefonoCuidador ADD CONSTRAINT telefonoCuidador_pk
 PRIMARY KEY(RFCCuidador, Telefono);
 
 ALTER TABLE TelefonoCuidador ADD CONSTRAINT rfcCuidador_fk
-FOREIGN KEY (RFCCuidador) REFERENCES Cuidador(RFCCuidador);
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador(RFCCuidador)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
+--Inician COmentarios TelefonoCuidador
+
+COMMENT ON TABLE TelefonoCuidador IS 'Tabla que almaceno todos los telefonos de los cuidadores';
+COMMENT ON COLUMN TelefonoCuidador.RFCCuidador IS 'Identificador del cuidador';
+COMMENT ON COLUMN TelefonoCuidador.Telefono IS 'Telefono del cuidador';
+COMMENT ON CONSTRAINT telefonoCuidador_d1 ON TelefonoCuidador IS 'Restriccion CHECK que verifica que todos los caracteres de un telefono sean digitos';
+COMMENT ON CONSTRAINT telefonoCuidador_d2 ON TelefonoCuidador IS 'Restriccion CHECK que verifica que un rfc tenga el formato correcto y que solo tenga una longitud de 13 o 12 caracteres';
+COMMENT ON CONSTRAINT telefonoCuidador_pk ON TelefonoCuidador IS 'Llave primaria para la tabla TelefonoCuidador';
+COMMENT ON CONSTRAINT rfcCuidador_fk ON TelefonoCuidador IS 'Llave foranea de TelefonoCuidador que hace referencia a la tabla cuidador';
+
+--Terminan Comentarios de TelefonoCuidador
 
 CREATE TABLE CorreoVisitante (
 	IDVisitante SERIAL,
