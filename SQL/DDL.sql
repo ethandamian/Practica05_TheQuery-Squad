@@ -835,10 +835,22 @@ CREATE TABLE DistribuirMedicina(
 
 --LLAVES DistribuirMedicina
 ALTER TABLE DistribuirMedicina ADD CONSTRAINT idinsumoMedicina_fk
-FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina (IDInsumoMedicina);
+FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina (IDInsumoMedicina)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE DistribuirMedicina ADD CONSTRAINT idbioma_fk
-FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--Inician Comentarios DistribuirMedicina
+
+COMMENT ON TABLE DistribuirMedicina IS 'Tabla de la relacion entre bioma y medicina';
+COMMENT ON COLUMN DistribuirMedicina.IDInsumoMedicina  IS 'Identificador de Medicina';
+COMMENT ON COLUMN DistribuirMedicina.IDBioma IS 'Identificador del bioma';
+COMMENT ON CONSTRAINT idinsumoMedicina_fk ON DistribuirMedicina IS 'Llave foranea que hace referencia a la tabla Medicina';
+COMMENT ON CONSTRAINT idbioma_fk ON DistribuirMedicina IS 'Llave foranea que hace referencia a la tabla bioma';
+
+--Terminan Comentarios DistribuirMedicina
 
 
 CREATE TABLE Cuidar (
@@ -1022,10 +1034,22 @@ CREATE TABLE DistribuirAlimento(
 
 -- LLAVES DistribuirAlimento
 ALTER TABLE DistribuirAlimento ADD CONSTRAINT idinsumoAlimento_fk
-FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento);
+FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE DistribuirAlimento ADD CONSTRAINT idbioma_fk
-FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--Inician Comentarios para distribuirAlimento
+
+COMMENT ON TABLE DistribuirAlimento IS 'Tabla de la relacion entre bioma ya alimento';
+COMMENT ON COLUMN DistribuirAlimento.IDInsumoAlimento  IS 'Identificador del alimento';
+COMMENT ON COLUMN DistribuirAlimento.IDBioma IS 'Identificador del bioma';
+COMMENT ON CONSTRAINT idinsumoAlimento_fk ON DistribuirAlimento IS 'Llave foranea que hace referencia a la tabla Alimento';
+COMMENT ON CONSTRAINT idbioma_fk ON DistribuirAlimento IS 'Llave foranea que hace referencia a la tabla bioma';
+
+--Terminan COmentarios para distribuirAlimento
 
 
 
