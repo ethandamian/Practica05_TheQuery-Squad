@@ -109,8 +109,49 @@ ALTER TABLE Veterinario ALTER COLUMN Especialidad SET NOT NULL;
 ALTER TABLE Veterinario ADD CONSTRAINT veterinario_pk
 PRIMARY KEY(RFCVeterinario);
 
+-- COMMENTS DE Veterinario 
 
+COMMENT ON TABLE Veterinario IS 'Tabla Veterinario';
+COMMENT ON COLUMN Veterinario.RFCVeterinario IS 'RFC del Veterinario';
+COMMENT ON COLUMN Veterinario.Nombre IS 'Nombre del Veterinario';
+COMMENT ON COLUMN Veterinario.ApellidoPaterno IS 'Apellido Paterno del Veterinario';
+COMMENT ON COLUMN Veterinario.ApellidoMaterno IS 'Apellido Materno del Veterinario';
+COMMENT ON COLUMN Veterinario.Calle IS 'La calle donde vive el Veterinario';
+COMMENT ON COLUMN Veterinario.NumInterior IS 'Numero Interior de la direccion de el Veterinario';
+COMMENT ON COLUMN Veterinario.NumExterior IS 'Numero Exterior de la direccion de el Veterinario';
+COMMENT ON COLUMN Veterinario.Colonia IS 'La colonia de la direccion de el Veterinario';
+COMMENT ON COLUMN Veterinario.Estado IS 'El Estado de la direccion donde vive el Veterinario';
+COMMENT ON COLUMN Veterinario.FechaInicioContrato IS 'Fecha cuando inicio el contrato de el Veterinario';
+COMMENT ON COLUMN Veterinario.FechaFinContrato IS 'Fecha cuando finalizo el contrato de el Veterinario';
+COMMENT ON COLUMN Veterinario.FechaNacimiento IS 'Fecha de nacimiento del Veterinario';
+COMMENT ON COLUMN Veterinario.Genero IS 'Género del Veterinario';
+COMMENT ON COLUMN Veterinario.Salario IS 'Salario del Veterinario';
+COMMENT ON COLUMN Veterinario.Especialidad IS 'Especialidad del Veterinario';
+COMMENT ON CONSTRAINT veterinario_d1 ON Veterinario IS 
+'Restriccion para RFC:Longitud de 12 o 13, 4 caracteres letras, 6 numeros, 2 o 3 letras o numeros';
+COMMENT ON CONSTRAINT veterinario_d2 ON Veterinario IS
+'Restriccion para Nombre: Debe contener solo letras';
+COMMENT ON CONSTRAINT veterinario_d3 ON Veterinario IS
+'Restriccion para el Apellido Paterno: Debe contener solo letras';
+COMMENT ON CONSTRAINT veterinario_d4 ON Veterinario IS
+'Restriccion para el Apellido Materno: Debe contener solo letras';
+COMMENT ON CONSTRAINT checkApe ON Veterinario IS
+'El Veterinario puede no tener apellido paterno o materno';
+COMMENT ON CONSTRAINT veterinario_d5 ON Veterinario IS
+'Restriccion para Calle: No debe ser la cadena vacia';
+COMMENT ON CONSTRAINT veterinario_d6 ON Veterinario IS
+'Restriccion para Colonia: No debe ser la cadena vacia';
+COMMENT ON CONSTRAINT veterinario_d7 ON Veterinario IS
+'Restriccion para Estado: No debe ser la cadena vacia y debe contener solo letras';
 
+COMMENT ON CONSTRAINT veterinario_d8 ON Veterinario IS
+'Restriccion para Genero: No debe ser la cadena vacia y debe contener solo letras';
+COMMENT ON CONSTRAINT veterinario_d9 ON Veterinario IS
+'Restriccion para Salario: Debe ser mayor a 0';
+COMMENT ON CONSTRAINT veterinario_d10 ON Veterinario IS
+'Restriccion para Especialidad: No debe ser la cadena vacia y debe contener solo letras';
+COMMENT ON CONSTRAINT veterinario_pk ON Veterinario IS
+'Llave primaria de Veterinario';
 
 
 
@@ -304,6 +345,26 @@ CHECK (
 ALTER TABLE Visitante ADD CONSTRAINT visitante_pk
 PRIMARY KEY(IDVisitante);
 
+-- COMMENT DE Visitante
+COMMENT ON TABLE Visitante IS 'Tabla Visitante';
+COMMENT ON COLUMN Visitante.IDVisitante IS 'Columna id del Visitante';
+COMMENT ON COLUMN Visitante.Genero IS 'Genero del Visitante';
+COMMENT ON COLUMN Visitante.Nombre IS 'Nombre del Visitante';
+COMMENT ON COLUMN Visitante.Paterno IS 'Apellido Paterno del Visitante';
+COMMENT ON COLUMN Visitante.Materno IS 'Apellido Materno del Visitante';
+
+COMMENT ON CONSTRAINT visitante_d1 ON Visitante IS 
+'Restriccion en Genero: No debe ser la cadena vacia y debe contener solo letras';
+COMMENT ON CONSTRAINT visitante_d2 ON Visitante IS
+'Restriccion en Nombre: No debe ser la cadena vacia y debe contener solo letras';
+COMMENT ON CONSTRAINT visitante_d3 ON Visitante IS
+'Restriccion en Paterno: No debe ser la cadena vacia y debe contener solo letras';
+COMMENT ON CONSTRAINT visitante_d4 ON Visitante IS
+'Restriccion en Materno: No debe ser la cadena vacia y debe contener solo letras';
+COMMENT ON CONSTRAINT checkApe ON Visitante IS
+'Restriccion en Apellidos: El Visitante puede no tener apellido paterno o materno';
+COMMENT ON CONSTRAINT visitante_pk ON Visitante IS
+'Llave primaria de Visitante';
 
 
 CREATE TABLE Medicina(
@@ -346,6 +407,12 @@ CREATE TABLE Jaula(
 -- LLAVES Jaula
 ALTER TABLE Jaula ADD CONSTRAINT jaula_pk
 PRIMARY KEY(IDJaula);
+
+--COMMENT DE Jaula
+COMMENT ON TABLE Jaula IS 'Tabla Jaula';
+COMMENT ON COLUMN Jaula.IDJaula IS 'Columna ID de la Jaula';
+COMMENT ON CONSTRAINT jaula_pk ON Jaula IS
+'Llave primaria de Jaula';
 
 -----------------------------------TABLAS CON LLAVES FORANEAS -------------------------------------
 
@@ -826,11 +893,21 @@ CREATE TABLE Tener(
 
 -- LLAVES Tener
 ALTER TABLE Tener ADD CONSTRAINT idbioma_fk
-FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Tener ADD CONSTRAINT idservicio_fk
-FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio);
+FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
+-- COMMENT DE Tener
+COMMENT ON TABLE Tener IS 'Tabla de relacion Tener';
+COMMENT ON COLUMN Tener.IDBioma IS 'Columna Id de Bioma';
+COMMENT ON COLUMN Tener.IDServicio IS 'Columna ID de Servicio';
+COMMENT ON CONSTRAINT idbioma_fk ON Tener IS
+'Llave foranea IDBioma referenciada de la tabla Bioma';
+COMMENT ON CONSTRAINT idservicio_fk ON Tener IS
+'Llve foranea IDServicio referenciada de la tabla Servicio';
 
 CREATE TABLE Atender(
 	IDAnimal SERIAL,
@@ -994,7 +1071,21 @@ ALTER TABLE TelefonoVeterinario ADD CONSTRAINT telefonoVeterinario_pk
 PRIMARY KEY(RFCVeterinario, Telefono);
 
 ALTER TABLE TelefonoVeterinario ADD CONSTRAINT rfcVeterinario_fk
-FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario) ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- COMMENTS DE TelefonoVeterinario
+COMMENT ON TABLE TelefonoVeterinario IS 'Tabla que contiene los telefonos de los Veterinarios';
+COMMENT ON COLUMN TelefonoVeterinario.RFCVeterinario IS 'Identificador(RFC) del Veterinario';
+COMMENT ON COLUMN TelefonoVeterinario.Telefono IS 'El telefono del Veterinario';
+COMMENT ON CONSTRAINT telefonoVeterinario_d1 ON TelefonoVeterinario IS 
+'Restriccion para el telefono: La cadena solo puede contener numeros';
+COMMENT ON CONSTRAINT telefonoVeterinario_d2 ON TelefonoVeterinario IS 
+'Restriccion para RFC: Longitud de 12 o 13, 4 caracteres letras, 6 numeros, 2 o 3 letras o numeros';
+COMMENT ON CONSTRAINT telefonoVeterinario_pk ON TelefonoVeterinario IS
+'Llave primaria de TelefonoVeterinario';
+COMMENT ON CONSTRAINT rfcVeterinario_fk ON TelefonoVeterinario IS
+'Lave foranea de TelefonoVeterinario, referenciada de la tabla Veterinario';
+
 
 
 CREATE TABLE CorreoCuidador(
@@ -1022,7 +1113,22 @@ ALTER TABLE CorreoCuidador ADD CONSTRAINT correoCuidador_pk
 PRIMARY KEY(RFCCuidador, Correo);
 
 ALTER TABLE CorreoCuidador ADD CONSTRAINT rfcCuidador_fk
-FOREIGN KEY (RFCCuidador) REFERENCES Cuidador(RFCCuidador);
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador(RFCCuidador)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMENTS DE CorreoCuidador
+COMMENT ON TABLE CorreoCuidador IS 'Tabla que contiene el correo del cuidador';
+COMMENT ON COLUMN CorreoCuidador.RFCCuidador IS 'RFC del Cuidador';
+COMMENT ON COLUMN CorreoCuidador.Correo IS 'Correo del Cuidador';
+
+COMMENT ON CONSTRAINT correoCuidador_d1 ON CorreoCuidador IS
+'Restriccion para RFC: Longitud de 12 o 13, 4 caracteres letras, 6 numeros, 2 o 3 letras o numeros';
+COMMENT ON CONSTRAINT correoCuidador_d2 ON CorreoCuidador IS
+'Restriccion para Correo: Tiene que ser de la forma [caracteres]@[caracteres].[dominio]';
+COMMENT ON CONSTRAINT correoCuidador_pk ON CorreoCuidador IS
+'Llave primaria de CorreoCuidador';
+COMMENT ON CONSTRAINT rfcCuidador_fk ON CorreoCuidador IS
+'Llave foranea de CorreoCuidador referenciada de la tabla Cuidador';
 
 
 
