@@ -338,6 +338,22 @@ ALTER TABLE Medicina ALTER COLUMN Laboratorio SET NOT NULL;
 ALTER TABLE Medicina ADD CONSTRAINT medicina_pk
 PRIMARY KEY(IDInsumoMedicina);
 
+--COMMENT Medicina
+
+COMMENT ON TABLE Medicina IS 'Tabal que contiene la informacion de las medicinas';
+COMMENT ON COLUMN Medicina.IDInsumoMedicina IS 'Identificador de la medicina' ;
+COMMENT ON COLUMN Medicina.Nombre IS 'Nombre de la medicina';
+COMMENT ON COLUMN Medicina.Cantidad IS 'Cantidad de cada medicina' ;
+COMMENT ON COLUMN Medicina.FechaCaducidad IS 'Fecha de caducidad de la medicina' ;
+COMMENT ON COLUMN Medicina.Refrigeracion IS 'Booleano que indica si la medicina necesita estar en refrigeracion';
+COMMENT ON COLUMN Medicina.Lote IS 'Lote de la medicina';
+COMMENT ON COLUMN Medicina.Laboratorio IS 'Laboratorio de la medicina';
+
+COMMENT ON CONSTRAINT medicina_d1 ON Medicina IS 'El nombre de la medicina no puede ser igual a la cadena vacia';
+COMMENT ON CONSTRAINT medicina_d2 ON Medicina IS 'El nombre del laboratorio no puesde ser igual a la cadena vacia';
+COMMENT ON CONSTRAINT medicina_pk ON Medicina IS 'IDInsumoMedicina es la llave primaria';
+
+
 
 CREATE TABLE Jaula(
 	IDJaula SERIAL
@@ -584,10 +600,20 @@ ALTER TABLE ProveerMedicina ALTER COLUMN RFCProveedor SET NOT NULL;
 
 -- LLAVES ProveerMedicina
 ALTER TABLE ProveerMedicina ADD CONSTRAINT rfcProveedor_fk
-FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ProveerMedicina ADD CONSTRAINT idinsumoMedicina_fk
-FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina(IDInsumoMedicina);
+FOREIGN KEY (IDInsumoMedicina) REFERENCES Medicina(IDInsumoMedicina) ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMMENT ProveerMedicina
+
+COMMENT ON TABLE ProveerMedicina IS 'Tabla de la relacion proveer Proveedor con Medicina';
+COMMENT ON COLUMN ProveerMedicina.IDInsumoMedicina IS 'Identificador de la medicina';
+COMMENT ON COLUMN ProveerMedicina.RFCProveedor IS 'Identificador del proveedor';
+
+COMMENT ON CONSTRAINT proveerMedicina_d1 ON ProveerMedicina IS 'El RFC debe ser no nulo, debe tener 4 letras mayusculas, 6 numeros y despues de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT rfcProveedor_fk ON ProveerMedicina IS 'La llave foranea RFCProveedor que hace referencia a la tabla Proveedor';
+COMMENT ON CONSTRAINT idinsumoMedicina_fk ON ProveerMedicina IS 'La llave foranea IDInsumoMedicina que hace referencia a la tabla Medicina';
 
 
 CREATE TABLE Notificar(
@@ -797,10 +823,19 @@ CREATE TABLE ProveerAlimento(
 
 -- LLAVES ProveerAlimento
 ALTER TABLE ProveerAlimento ADD CONSTRAINT idinsumoAlimento_fk
-FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento);
+FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ProveerAlimento ADD CONSTRAINT rfcProveedor_fk
-FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor) ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMMENT ProveerAlimento
+
+COMMENT ON TABLE ProveerAlimento IS 'Tabla de la relacion entre Alimento y Proveedor';
+COMMENT ON COLUMN ProveerAlimento.IDInsumoAlimento IS 'Identificador del alimento';
+COMMENT ON COLUMN ProveerAlimento.RFCProveedor IS 'RFC del proveedor';
+
+COMMENT ON CONSTRAINT idinsumoAlimento_fk ON ProveerAlimento IS 'La llave foranea IDInsumoAlimento que referencia la tabla Alimento';
+COMMENT ON CONSTRAINT rfcProveedor_fk ON ProveerAlimento IS 'La llave foranea RFCProveedor que referencia la tabla Proveedor';
 
 
 CREATE TABLE DistribuirAlimento(
@@ -816,6 +851,8 @@ FOREIGN KEY (IDInsumoAlimento) REFERENCES Alimento (IDInsumoAlimento);
 
 ALTER TABLE DistribuirAlimento ADD CONSTRAINT idbioma_fk
 FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
+
+
 
 
 CREATE TABLE Tener(
@@ -856,10 +893,23 @@ ALTER TABLE Atender ALTER COLUMN RFCVeterinario SET NOT NULL;
 
 -- LLAVES Atender
 ALTER TABLE Atender ADD CONSTRAINT idanimal_fk
-FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal) ON UPDATE CASCADE ON DELETE CASCADE ;
 
 ALTER TABLE Atender ADD CONSTRAINT rfcVeterinario_fk
-FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario (RFCVeterinario);
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario (RFCVeterinario) ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMMENT de Atender
+
+COMMENT ON TABLE Atender IS 'Tabla de la relacion Atender';
+COMMENT ON COLUMN Atender.IDAnimal IS 'Columna id del animal';
+COMMENT ON COLUMN Atender.IndicacionesMedicas IS 'Indicaciones Medicas dadas por el veterinario';
+COMMENT ON COLUMN Atender.RFCVeterinario IS 'RFC del veterinario';
+
+COMMENT ON CONSTRAINT atender_d1 ON Atender IS 'Las indicaciones medicas no pueden ser la cadena vacia y tienen que ser solo letras';
+COMMENT ON CONSTRAINT atender_d2 ON Atender IS 'El rfc del veterinario no puede ser la cadena vacia, la longitud del rfc tiene que ser 12 o 13, debe tener 4 letras mayusculas, 6 numeros y despues de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT idanimal_fk ON Atender IS 'Llave foranea IDAnimal referenciada de la tabla Animal';
+COMMENT ON CONSTRAINT rfcVeterinario_fk ON Atender IS 'Llave foranea RFCVeterinario referenciada de la tabla Veterinario';
+
 
 ------------------------------Telefonos y correos -------------------------------------
 
@@ -909,7 +959,19 @@ ALTER TABLE TelefonoProveedor ADD CONSTRAINT telefonoProveedor_pk
 PRIMARY KEY(RFCProveedor, Telefono);
 
 ALTER TABLE TelefonoProveedor ADD CONSTRAINT rfcProveedor_fk
-FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor) ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMMENT de TelefonoProveedor
+
+COMMENT ON TABLE TelefonoProveedor IS 'Tabla que contiene los telefonos de los proveedores';
+COMMENT ON COLUMN TelefonoProveedor.RFCProveedor IS 'RFC del proveedor al cual le pertenece el telefono';
+COMMENT ON COLUMN TelefonoProveedor.Telefono IS 'Telefono asociado a algun proveedor';
+
+COMMENT ON CONSTRAINT telefonoProveedor_d1 ON TelefonoProveedor IS 'El telefono debe estar conformado por numeros y no ser nulo';
+COMMENT ON CONSTRAINT telefonoProveedor_d2 ON TelefonoProveedor IS 'El RFC del proveedor debe empezar con 4 letras mayusculas, 6 numeros y de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT telefonoProveedor_pk ON TelefonoProveedor IS 'El RFCProveedor y el telefono son llaves primarias';
+COMMENT ON CONSTRAINT rfcProveedor_fk On TelefonoProveedor IS 'El RFCProveedor es llave foranea que referencia a la tabla Proveedor';
+
 
 
 CREATE TABLE CorreoProveedor(
@@ -1079,11 +1141,19 @@ CREATE TABLE Visitar(
 
 -- LLAVES Visitar
 ALTER TABLE Visitar ADD CONSTRAINT idEvento_fk
-FOREIGN KEY (IDEvento) REFERENCES Evento(IDEvento);
+FOREIGN KEY (IDEvento) REFERENCES Evento(IDEvento) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Visitar ADD CONSTRAINT idVisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante) ON UPDATE CASCADE ON DELETE CASCADE;
 
+--COMMENT Visitar
+
+COMMENT ON TABLE Visitar IS 'Tabla que relaciona la asistencia de un Visitante con algun Evento';
+COMMENT ON COLUMN Visitar.IDEvento IS 'Identificador del evento';
+COMMENT ON COLUMN Visitar.IDVisitante IS 'Identificador del visitante';
+
+COMMENT ON CONSTRAINT idEvento_fk ON Visitar IS 'Llave foranea idEvento que referencia la tabla Evento';
+COMMENT ON CONSTRAINT idVisitante_fk ON Visitar IS 'Llave foranea IDVisitante que referencia la tabla Visitante';
 
 
 
