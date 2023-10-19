@@ -578,7 +578,44 @@ ALTER TABLE Cuidador ADD CONSTRAINT cuidador_pk
 PRIMARY KEY(RFCCuidador);
 
 ALTER TABLE Cuidador ADD CONSTRAINT idbioma_pk
-FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--Inician Comentarios Cuidador
+
+
+COMMENT ON TABLE Cuidador IS 'Tabla que contiene a los cuidadores del zoologico';
+COMMENT ON COLUMN Cuidador.rfccuidador IS 'Identificador del cuidador';
+COMMENT ON COLUMN Cuidador.idbioma  IS 'Identificador del bioma en donde trabaja el cuidador';
+COMMENT ON COLUMN Cuidador.nombre  IS 'Nombre del cuidador';
+COMMENT ON COLUMN Cuidador.apellidopaterno IS 'Nombre paterno del cuidador';
+COMMENT ON COLUMN Cuidador.apellidomaterno IS 'Nombre materno del cuidador';
+COMMENT ON COLUMN Cuidador.calle IS 'Calle del domicilio del cuidador';
+COMMENT ON COLUMN Cuidador.numinterior IS 'Numero interior del domicilio del cuidador';
+COMMENT ON COLUMN Cuidador.numexterior  IS 'Numero exterior del domicilio del cuidador';
+COMMENT ON COLUMN Cuidador.colonia IS 'Colonia del domicilio del cuidador';
+COMMENT ON COLUMN Cuidador.estado  IS 'Estado del domicilio del cuidador';
+COMMENT ON COLUMN Cuidador.fechainiciocontrato IS 'Fecha en la que inicio el contrato como cuidador';
+COMMENT ON COLUMN Cuidador.fechafincontrato IS  'Fecha en que finalizara el contrato como cuidador';
+COMMENT ON COLUMN Cuidador.genero IS 'Genero del cuidador';
+COMMENT ON COLUMN Cuidador.diastrabajo IS 'Dias en los que un cuidador trabaja';
+COMMENT ON COLUMN Cuidador.horariolaboral IS 'Horario laboral del cuidador';
+COMMENT ON COLUMN Cuidador.salario IS 'Salario del cuidador';
+COMMENT ON CONSTRAINT cuidador_d1 ON Cuidador IS 'Restriccion CHECK para rfc del cuidador debe tener el formato en RFC y contener 13 o 12 caracteres y no debe ser nulo';
+COMMENT ON CONSTRAINT cuidador_d2 ON Cuidador IS 'Restriccion CHECK para el nombre del cuidador, verifica que contiene letras y no debe ser nulo';
+COMMENT ON CONSTRAINT cuidador_d3 ON Cuidador IS 'Restriccion CHECK para el apellido paterno del cuidador, verifica que contenga letras y debe ser no nulo';
+COMMENT ON CONSTRAINT cuidador_d4 ON Cuidador IS 'Restriccion CHECK para el apellido paterno del cuidador, verifica que contenga letras y debe ser no nulo';
+COMMENT ON CONSTRAINT checkApe ON Cuidador IS 'Restriccion CHECK para apellido materno y paterno que no permite que sean nulos';
+COMMENT ON CONSTRAINT cuidador_d5 ON Cuidador IS 'Restriccion CHECK para la calle del cuidador, no deba ser nula';
+COMMENT ON CONSTRAINT cuidador_d6 ON Cuidador IS 'Restriccion CHECK para que la colonia no sea nula';
+COMMENT ON CONSTRAINT cuidador_d7 ON Cuidador IS 'Restriccion CHECK para que el estado contenga letras y no sea nulo';
+COMMENT ON CONSTRAINT cuidador_d8 ON Cuidador IS 'Restriccion CHECK para que el genero contenga letras y sea no nulo';
+COMMENT ON CONSTRAINT cuidador_d9 ON Cuidador IS 'Restriccion CKECK para que los dias de trabajo sean mayores a 0 y menores a 30';
+COMMENT ON CONSTRAINT cuidador_d11 ON Cuidador IS 'Restriccion CHECK para que el salario sea mayor a 0';
+COMMENT ON CONSTRAINT cuidador_pk ON Cuidador IS 'La llave primaria de cuidador que es su RFC';
+COMMENT ON CONSTRAINT idbioma_pk ON Cuidador IS 'La llave idbioma que hacer r	encia a la tabla bioma ';
+
+--Terminan Comentarios Cuidador
 
 
 CREATE TABLE Animal(
@@ -1185,7 +1222,21 @@ ALTER TABLE CorreoVeterinario ADD CONSTRAINT correoVeterinario_pk
 PRIMARY KEY(RFCVeterinario, Correo);
 
 ALTER TABLE CorreoVeterinario ADD CONSTRAINT rfcVeterinario_fk
-FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--Inician Comentarios CorreoVeterinario
+
+COMMENT ON TABLE CorreoVeterinario IS 'Tabla que contiene los correos de los veterinarios';
+COMMENT ON COLUMN CorreoVeterinario.RFCVeterinario IS 'Identificador del veterinario';
+COMMENT ON COLUMN CorreoVeterinario.Correo IS 'Correo del veterinario';
+COMMENT ON CONSTRAINT correoVeterinario_d1 ON CorreoVeterinario IS 'Restriccion CHECK que verifica que el RFC sea no nulo y tenga el formato de RFC, debe contener 12 o 13 caracteres';
+COMMENT ON CONSTRAINT correoVeterinario_d2 ON CorreoVeterinario IS 'Restriccion CKECK de correo veterinario que verifica el formato del correo';
+COMMENT ON CONSTRAINT correoVeterinario_pk ON CorreoVeterinario IS 'Llave primaria de CorreoVeterinario';
+COMMENT ON CONSTRAINT rfcVeterinario_fk ON CorreoVeterinario IS 'Llave foranea de CorreoVeterinario que hace referencia a Veterinario';
+--Terminan Comentarios CorreoVeterinario
+
 
 
 CREATE TABLE TelefonoVeterinario(
@@ -1320,7 +1371,17 @@ ALTER TABLE CorreoVisitante ADD CONSTRAINT correoVisitante_pk
 PRIMARY KEY(IdVisitante, Correo);
 
 ALTER TABLE CorreoVisitante ADD CONSTRAINT idVisitante_fk
-FOREIGN KEY(IDVisitante) REFERENCES Visitante(IDVisitante);
+FOREIGN KEY(IDVisitante) REFERENCES Visitante(IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--Inician comentarios de Correo Visitante
+COMMENT ON TABLE CorreoVisitante IS 'Tabla que contiene los correos de los visitantes';
+COMMENT ON COLUMN CorreoVisitante.IDVisitante IS 'Identificador del visitante';
+COMMENT ON COLUMN CorreoVisitante.Correo IS 'Correo del visitante';
+COMMENT ON CONSTRAINT correoVisitante_d1 ON CorreoVisitante IS 'Restriccion CHECK que verifica que la entrada tenga el formato de un correo';
+COMMENT ON CONSTRAINT correoVisitante_pk ON CorreoVisitante IS 'Correo del visitante como llave primaria';
+COMMENT ON CONSTRAINT idVisitante_fk ON CorreoVisitante IS 'llave foranea del correo del visitante';
+--Terminan comentarios de Correo Visitante
 
 CREATE TABLE Visitar(
 	IDEvento SERIAL,
