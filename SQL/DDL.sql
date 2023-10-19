@@ -200,6 +200,34 @@ ALTER TABLE Proveedor ADD CONSTRAINT proveedor_pk
 PRIMARY KEY(RFCProveedor);
 
 
+COMMENT ON TABLE Proveedor IS 'Tabla que contiene la informacion de los proveedores de insumos';
+COMMENT ON COLUMN Proveedor.RFCProveedor IS 'El RFC del proveedor';
+COMMENT ON COLUMN Proveedor.Nombre IS 'El nombre del proveedor';
+COMMENT ON COLUMN Proveedor.ApellidoPaterno IS 'El apellido paterno del proveedor';
+COMMENT ON COLUMN Proveedor.ApellidoMaterno IS 'El apellido materno del proveedor';
+COMMENT ON COLUMN Proveedor.Calle IS 'La calle donde vive el proveedor';
+COMMENT ON COLUMN Proveedor.NumInterior IS 'El numero interior del lugar donde vive el preveedor';
+COMMENT ON COLUMN Proveedor.NumExterior IS 'El numero exterior del lugar donde vive el proveedor';
+COMMENT ON COLUMN Proveedor.Colonia IS 'La colonia donde vive el proveedor';
+COMMENT ON COLUMN Proveedor.Estado IS 'El estado donde vive el proveedor';
+COMMENT ON COLUMN Proveedor.FechaInicioContrato IS 'La fecha de inicio de contrato del proveedor';
+COMMENT ON COLUMN Proveedor.FechaFinContrato IS 'La fecha del fin del contrato del proveedor';
+COMMENT ON COLUMN Proveedor.FechaNacimiento IS 'La fecha de nacimiento del proveedor';
+COMMENT ON COLUMN Proveedor.Genero IS 'El genero del proveedor';
+COMMENT ON COLUMN Proveedor.FrecuenciaServicio IS 'La frecuencia en que el proveedor ofrece servicio';
+COMMENT ON COLUMN Proveedor.CostoServicio IS 'El costo del servicio del proveedor';
+COMMENT ON CONSTRAINT proveedor_d1 ON Proveedor IS 'El RFC debe ser no nulo, debe tener 4 letras mayusculas, 6 numeros y despues de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT proveedor_d2 ON Proveedor IS 'El nombre debe ser no nulo y solo contener letras';
+COMMENT ON CONSTRAINT proveedor_d3 ON Proveedor IS 'El apellido paterno debe ser no nulo, no debe ser la cadena vacia y solo contener letras';
+COMMENT ON CONSTRAINT proveedor_d4 ON Proveedor IS 'El apellido materno debe ser no nulo, no debe ser la cadena vacia y solo contener letras';
+COMMENT ON CONSTRAINT proveedor_d5 ON Proveedor IS 'El nombre de la calle no debe ser nulo y no debe ser la cadena vacia';
+COMMENT ON CONSTRAINT proveedor_d6 ON Proveedor IS 'El nombre de la colonia no debe ser nulo y no debe ser la cadena vacia';
+COMMENT ON CONSTRAINT proveedor_d7 ON Proveedor IS 'El nombre del estado no debe ser nulo, no debe ser la cadena vacia, solo debe tener letras';
+COMMENT ON CONSTRAINT proveedor_d8 ON Proveedor IS 'El nombre del genero no debe ser nulo, no debe ser la cadena vacia y solo debe tener letras';
+COMMENT ON CONSTRAINT proveedor_d9 ON Proveedor IS 'La frecuencia de servicio debe der mayor a 0 y no nulo';
+COMMENT ON CONSTRAINT proveedor_d10 ON Proveedor IS 'El costo de servicio debe der mayor a 0 y no nulo';
+COMMENT ON CONSTRAINT proveedor_pk ON Proveedor IS 'El RFC del proveedor es la llave primaria';
+
 
 CREATE TABLE Bioma(
 	IDBioma SERIAL,
@@ -230,6 +258,17 @@ ALTER TABLE Bioma ALTER COLUMN CantidadJaulas SET NOT NULL;
 ALTER TABLE Bioma ADD CONSTRAINT bioma_pk
 PRIMARY KEY (IDBioma);
 
+COMMENT ON TABLE Bioma IS 'Tabla que contiene la informacion de los biomas';
+COMMENT ON COLUMN Bioma.IDBioma IS 'El identificador del bioma';
+COMMENT ON COLUMN Bioma.TipoBioma IS 'El tipo de bioma';
+COMMENT ON COLUMN Bioma.CantidadJaulas IS 'La cantidad de jaulas que hay en el bioma';
+COMMENT ON CONSTRAINT bioma_d1 ON Bioma IS 'El tipo de bioma debe ser  desierto, pastizales, franja costera, aviario, bosque templado o bosque tropical';
+COMMENT ON CONSTRAINT bioma_d2 ON Bioma IS 'La cantidad de jaulas debe ser mayor o igual a 0';
+COMMENT ON CONSTRAINT bioma_pk ON Bioma IS 'IDBioma es la llave primaria';
+
+
+
+
 
 CREATE TABLE Alimento(
 	IDInsumoAlimento SERIAL,
@@ -248,11 +287,10 @@ CHECK (Nombre <> ''
 ALTER TABLE Alimento ALTER COLUMN Nombre SET NOT NULL;
 
 ALTER TABLE Alimento ADD CONSTRAINT alimento_d2
-CHECK(Cantidad > 0);
+CHECK(Cantidad >= 0);
 ALTER TABLE Alimento ALTER COLUMN Cantidad SET NOT NULL;
 ALTER TABLE Alimento ADD CONSTRAINT alimento_d3
-CHECK(FechaCaducidad < CURRENT_DATE
-	AND FechaCaducidad >= CURRENT_DATE);
+CHECK(FechaCaducidad > CURRENT_DATE);
 ALTER TABLE Alimento ALTER COLUMN FechaCaducidad SET NOT NULL;
 ALTER TABLE Alimento ALTER COLUMN Refrigeracion SET NOT NULL;
 
@@ -263,6 +301,21 @@ ALTER TABLE Alimento ALTER COLUMN TipoAlimento SET NOT NULL;
 --LLAVES Alimento
 ALTER TABLE Alimento ADD CONSTRAINT alimento_pk
 PRIMARY KEY(IDInsumoAlimento);
+
+
+COMMENT ON TABLE Alimento IS 'Tabla que contiene la informacion de los alimentos';
+COMMENT ON COLUMN Alimento.IDInsumoAlimento IS 'Identificador del alimento';
+COMMENT ON COLUMN Alimento.Nombre IS 'Nombre del alimento';
+COMMENT ON COLUMN Alimento.Cantidad IS 'Cantidad disponible del alimento';
+COMMENT ON COLUMN Alimento.FechaCaducidad IS 'Fercha de caducidad del alimento';
+COMMENT ON COLUMN Alimento.Refrigeracion IS 'Si el alimento requiere refrigeracion o no';
+COMMENT ON COLUMN Alimento.TipoAlimento IS 'Tipo de alimento';
+COMMENT ON CONSTRAINT alimento_d1 ON Alimento IS 'El nombre del alimento es no nulo, no puede ser la cadena vacia y debe contener letras';
+COMMENT ON CONSTRAINT alimento_d2 ON Alimento IS 'La cantidad disponible del alimento debe ser mayor o igual a 0 y no nulo';
+COMMENT ON CONSTRAINT alimento_d3 ON Alimento IS 'La fecha de caducidad debe ser despues de la fecha actual';
+COMMENT ON CONSTRAINT alimento_d4 ON Alimento IS 'El tipo de alimeto debe ser no nulo y distinto de la cadena vacia';
+COMMENT ON CONSTRAINT alimento_pk ON Alimento IS 'El IDInsumoAlimento es la llave primaria';
+
 
 
 CREATE TABLE Visitante(
@@ -604,10 +657,21 @@ ALTER TABLE Notificar ALTER COLUMN TipoNotificacion SET NOT NULL;
 
 --LLAVES DE Notificar
 ALTER TABLE Notificar ADD CONSTRAINT idevento_fk
-FOREIGN KEY (idEvento) REFERENCES Evento(idEvento);
+FOREIGN KEY (idEvento) REFERENCES Evento(idEvento)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Notificar ADD CONSTRAINT idvisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+COMMENT ON TABLE Notificar IS 'Tabla que contiene la informacion de las notificaciones que se hacen de los eventos a los clientes';
+COMMENT ON COLUMN Notificar.idEvento IS 'Identificador del evento del que se notifica';
+COMMENT ON COLUMN Notificar.IDVisitante IS 'Identificador del cliente al que se notifica';
+COMMENT ON COLUMN Notificar.TipoNotificacion IS 'El tipo de la notificacion que recibe el cliente';
+COMMENT ON CONSTRAINT notificar_d1 ON Notificar IS 'El tipo de notificacion es no nula y no debe ser la cadena vacia';
+COMMENT ON CONSTRAINT idevento_fk ON Notificar IS 'La llave foranea idEvento que referencia la tabla Evento';
+COMMENT ON CONSTRAINT idvisitante_fk ON Notificar IS 'La llave foranea IDVisitante que referencia la tabla Visitante';
+
 
 
 CREATE TABLE Trabajar(
@@ -781,11 +845,18 @@ CREATE TABLE Comprar(
 
 --LLAVES Comprar
 ALTER TABLE Comprar ADD CONSTRAINT idvisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Comprar ADD CONSTRAINT idservicio_fk
-FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio);
+FOREIGN KEY (IDServicio) REFERENCES Servicio (IDServicio)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
+COMMENT ON TABLE Comprar IS 'Tabla que contiene la informacion de los identificadores de los clientes y servicios al ser comprados';
+COMMENT ON COLUMN Comprar.IDVisitante IS 'Identificador del cliente que compra';
+COMMENT ON COLUMN Comprar.IDServicio IS 'Identificador del servicio que es comprado';
+COMMENT ON CONSTRAINT idvisitante_fk ON Comprar IS 'La llave foranea idVisitante que referencia a la tabla IDVisitante';
+COMMENT ON CONSTRAINT idservicio_fk ON Comprar IS 'La llave foranea IDServicio que referencia a la tabla Servicio';
 
 
 
@@ -937,7 +1008,17 @@ ALTER TABLE CorreoProveedor ADD CONSTRAINT correoProveedor_pk
 PRIMARY KEY(RFCProveedor, Correo);
 
 ALTER TABLE CorreoProveedor ADD CONSTRAINT rfcProveedor_fk
-FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor);
+FOREIGN KEY (RFCProveedor) REFERENCES Proveedor(RFCProveedor)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+COMMENT ON TABLE CorreoProveedor IS 'Tabla que contiene los correos de los proveedores';
+COMMENT ON COLUMN CorreoProveedor.RFCProveedor IS 'Identificador del proveedor al que le pertenece el correo';
+COMMENT ON COLUMN CorreoProveedor.Correo IS 'El correo asociado a algun proveedor';
+COMMENT ON CONSTRAINT correoProveedor_d1 ON CorreoProveedor IS 'El RFC del proveedor debe empezar con 4 letras mayusculas, 6 numeros y de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT correoProveedor_d2 ON CorreoProveedor IS 'El correo debe contener % y un punto';
+COMMENT ON CONSTRAINT correoProveedor_pk ON CorreoProveedor IS 'el RFCProveedor y Correo son llaves primarias';
+COMMENT ON CONSTRAINT rfcProveedor_fk ON CorreoProveedor IS 'El RFCProveedor es llave foranea que referencia a la tabla Proveedor';
+
 
 
 CREATE TABLE CorreoVeterinario(
@@ -1083,6 +1164,8 @@ FOREIGN KEY (IDEvento) REFERENCES Evento(IDEvento);
 
 ALTER TABLE Visitar ADD CONSTRAINT idVisitante_fk
 FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+
+
 
 
 
