@@ -1071,7 +1071,8 @@ ALTER TABLE TelefonoVeterinario ADD CONSTRAINT telefonoVeterinario_pk
 PRIMARY KEY(RFCVeterinario, Telefono);
 
 ALTER TABLE TelefonoVeterinario ADD CONSTRAINT rfcVeterinario_fk
-FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario) ON UPDATE CASCADE ON DELETE CASCADE;
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario) 
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- COMMENTS DE TelefonoVeterinario
 COMMENT ON TABLE TelefonoVeterinario IS 'Tabla que contiene los telefonos de los Veterinarios';
