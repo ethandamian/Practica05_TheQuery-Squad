@@ -667,10 +667,36 @@ ALTER TABLE Animal ADD CONSTRAINT animal_pk
 PRIMARY KEY(IDAnimal);
 
 ALTER TABLE Animal ADD CONSTRAINT idbioma_fk
-FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma (IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Animal ADD CONSTRAINT idjaula_fk
-FOREIGN KEY (IDJaula) REFERENCES Jaula (IDJaula);
+FOREIGN KEY (IDJaula) REFERENCES Jaula (IDJaula)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--Inician Comentarios de Animal
+
+COMMENT ON TABLE Animal IS 'Tabla que almacena a todos los animales del Zoologico';
+COMMENT ON COLUMN Animal.IDAnimal IS 'Identificador de animal';
+COMMENT ON COLUMN Animal.IDBioma IS 'Identificador del bioma del animal';
+COMMENT ON COLUMN Animal.IDJaula IS 'Identificador de la jaula del anumal';
+COMMENT ON COLUMN Animal.NombreAnimal IS 'Nombre del animal';
+COMMENT ON COLUMN Animal.Sexo IS 'Sexo del animal';
+COMMENT ON COLUMN Animal.Altura IS 'Altura del animal';
+COMMENT ON COLUMN Animal.Peso IS 'Peso del animal';
+COMMENT ON COLUMN Animal.Especie IS 'Especie del animal';
+COMMENT ON COLUMN Animal.Alimentacion IS 'Alimentacion del animal';
+COMMENT ON CONSTRAINT animal_d1 ON Animal IS 'Restriccion CHECK que verifica que el nombre de un animal no sea nulo y contenga solamente letras';
+COMMENT ON CONSTRAINT animal_d2 ON Animal IS 'Restriccion CHECK que verifica que el sexo de un animal sea macho o hembra';
+COMMENT ON CONSTRAINT animal_d3 ON Animal IS 'Restriccion CHECK que verifica que la altura de un animal sea mayor a 0';
+COMMENT ON CONSTRAINT animal_d4 ON Animal IS 'Restriccion CHECK que verifica que el peso del un animal sea mayor a 0';
+COMMENT ON CONSTRAINT animal_d5 ON Animal IS 'Restriccion CHECK que verifica que la especie del animal solo contenga letras';
+COMMENT ON CONSTRAINT animal_d7 ON Animal IS 'Restriccion CHECK que verifica que la alimentación del animal sea Carnivoro, Hervivoro o Omnivoro';
+COMMENT ON CONSTRAINT animal_pk ON Animal IS 'Llave primaria de animal'; 
+COMMENT ON CONSTRAINT idbioma_fk ON Animal IS 'Llave Foranea que hace referencia a la tabla bioma';
+COMMENT ON CONSTRAINT idjaula_fk ON Animal IS 'Llave Foranea que hace referencia a la tabla Jaula';
+
+--Terminan Comentarios de Animal
 
 		
 
