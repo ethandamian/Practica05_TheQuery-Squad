@@ -23,6 +23,13 @@ ALTER TABLE Servicio ALTER COLUMN TipoServicio SET NOT NULL;
 ALTER TABLE Servicio ADD CONSTRAINT servicio_pk
 PRIMARY KEY (IDServicio);
 
+-- COMMENT DE Servicio
+COMMENT ON TABLE Servicio IS 'Tabla que contiene la informacion de los servicios';
+COMMENT ON COLUMN Servicio.IDServicio IS 'Identificador del servicio';
+COMMENT ON COLUMN Servicio.TipoServicio IS 'Tipo de servicio';
+COMMENT ON CONSTRAINT servicio_d1 ON Servicio IS 'El tipo de servicio debe ser baño, tienda o comida';
+COMMENT ON CONSTRAINT servicio_pk ON Servicio IS 'IDServicio es la llave primaria';
+
 
 CREATE TABLE Veterinario(
 	RFCVeterinario VARCHAR(13),
@@ -726,7 +733,21 @@ ALTER TABLE Evento ADD CONSTRAINT evento_pk
 PRIMARY KEY(IDEvento);
 
 ALTER TABLE Evento ADD CONSTRAINT idvisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMMENT Evento
+COMMENT ON TABLE Evento IS 'Tabla que contiene la informacion de los eventos';
+COMMENT ON COLUMN Evento.IDEvento IS 'Identificador del evento';
+COMMENT ON COLUMN Evento.IDVisitante IS 'Identificador del visitante';
+COMMENT ON COLUMN Evento.TipoEvento IS 'Tipo de evento';
+COMMENT ON COLUMN Evento.Fecha IS 'Fecha del evento';
+COMMENT ON COLUMN Evento.Capacidad IS 'Capacidad del evento';
+
+COMMENT ON CONSTRAINT evento_d1 ON Evento IS 'El tipo de evento debe ser no nulo y no debe ser la cadena vacia';
+COMMENT ON CONSTRAINT evento_d2 ON Evento IS 'La capacidad debe ser mayor a 0 y no nulo';
+COMMENT ON CONSTRAINT evento_pk ON Evento IS 'El IDEvento es la llave primaria';
+COMMENT ON CONSTRAINT idvisitante_fk ON Evento IS 'La llave foranea IDVisitante que hace referencia a la tabla Visitante';
 
 
 CREATE TABLE Ticket(
@@ -760,8 +781,23 @@ ALTER TABLE Ticket ADD CONSTRAINT ticket_pk
 PRIMARY KEY(NumTicket);
 
 ALTER TABLE Ticket ADD CONSTRAINT idvisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante (IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
+--COMMENT Ticket
+COMMENT ON TABLE Ticket IS 'Tabla que contiene la informacion de los tickets';
+COMMENT ON COLUMN Ticket.NumTicket IS 'Identificador del ticket';
+COMMENT ON COLUMN Ticket.IDVisitante IS 'Identificador del visitante';
+COMMENT ON COLUMN Ticket.Descuento IS 'Descuento del ticket';
+COMMENT ON COLUMN Ticket.CostoUnitario IS 'Costo unitario del ticket';
+COMMENT ON COLUMN Ticket.TipoServicio IS 'Tipo de servicio del ticket';
+COMMENT ON COLUMN Ticket.Fecha IS 'Fecha del ticket';
+
+COMMENT ON CONSTRAINT ticket_d1 ON Ticket IS 'El descuento debe ser mayor o igual a 0 y menor o igual a 100 y no nulo';
+COMMENT ON CONSTRAINT ticket_d2 ON Ticket IS 'El costo unitario debe ser mayor a 0 y no nulo';
+COMMENT ON CONSTRAINT ticket_d3 ON Ticket IS 'El tipo de servicio debe ser baño, tienda o comida y no nulo';
+COMMENT ON CONSTRAINT ticket_pk ON Ticket IS 'El NumTicket es la llave primaria';
+COMMENT ON CONSTRAINT idvisitante_fk ON Ticket IS 'La llave foranea IDVisitante que hace referencia a la tabla Visitante';
 
 
 CREATE TABLE ProveerMedicina(
@@ -848,10 +884,21 @@ ALTER TABLE Trabajar ALTER COLUMN RFCVeterinario SET NOT NULL;
 
 -- LLAVES Trabajar
 ALTER TABLE Trabajar ADD CONSTRAINT rfcveterinario_fk
-FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario);
+FOREIGN KEY (RFCVeterinario) REFERENCES Veterinario(RFCVeterinario)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Trabajar ADD CONSTRAINT idBioma_fk
-FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma);
+FOREIGN KEY (IDBioma) REFERENCES Bioma(IDBioma)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- COMMENT Trabajar
+COMMENT ON TABLE Trabajar IS 'Tabla de la relación Trabajar';
+COMMENT ON COLUMN Trabajar.RFCVeterinario IS 'Identificador del veterinario que trabaja';
+COMMENT ON COLUMN Trabajar.IDBioma IS 'Identificador del bioma en el que trabaja el veterinario';
+COMMENT ON CONSTRAINT trabajar_d1 ON Trabajar IS 'El RFC debe ser no nulo, debe tener 4 letras mayusculas, 6 numeros y despues de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT rfcveterinario_fk ON Trabajar IS 'La llave foranea RFCVeterinario que hace referencia a la tabla Veterinario';
+COMMENT ON CONSTRAINT idBioma_fk ON Trabajar IS 'La llave foranea IDBioma que hace referencia a la tabla Bioma';
+
 
 
 CREATE TABLE DistribuirMedicina(
@@ -999,10 +1046,56 @@ ALTER TABLE Cuidar ALTER COLUMN Alimentacion SET NOT NULL;
 
 -- LLAVES Cuidar
 ALTER TABLE Cuidar ADD CONSTRAINT rfcCuidador_fk
-FOREIGN KEY (RFCCuidador) REFERENCES Cuidador (RFCCuidador);
+FOREIGN KEY (RFCCuidador) REFERENCES Cuidador (RFCCuidador)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE Cuidar ADD CONSTRAINT idanimal_fk
-FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal);
+FOREIGN KEY (IDAnimal) REFERENCES Animal (IDAnimal)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- COMMENTS Cuidar
+COMMENT ON TABLE Cuidar IS 'Tabla que contiene la informacion de los cuidadores y los animales que cuidan';
+COMMENT ON COLUMN Cuidar.RFCCuidador IS 'Identificador del cuidador';
+COMMENT ON COLUMN Cuidar.IDAnimal IS 'Identificador del animal';
+COMMENT ON COLUMN Cuidar.Nombre IS 'Nombre del cuidador';
+COMMENT ON COLUMN Cuidar.ApellidoPaterno IS 'Apellido paterno del cuidador';
+COMMENT ON COLUMN Cuidar.ApellidoMaterno IS 'Apellido materno del cuidador';
+COMMENT ON COLUMN Cuidar.Calle IS 'Calle del domicilio del cuidador';
+COMMENT ON COLUMN Cuidar.NumInterior IS 'Numero interior del domicilio del cuidador';
+COMMENT ON COLUMN Cuidar.NumExterior IS 'Numero exterior del domicilio del cuidador';
+COMMENT ON COLUMN Cuidar.Colonia IS 'Colonia del domicilio del cuidador';
+COMMENT ON COLUMN Cuidar.Estado IS 'Estado del domicilio del cuidador';
+COMMENT ON COLUMN Cuidar.FechaInicioContrato IS 'Fecha en la que inicio el contrato como cuidador';
+COMMENT ON COLUMN Cuidar.FechaFinContrato IS  'Fecha en que finalizara el contrato como cuidador';
+COMMENT ON COLUMN Cuidar.FechaNacimiento IS 'Fecha de nacimiento del cuidador';
+COMMENT ON COLUMN Cuidar.Genero IS 'Genero del cuidador';
+COMMENT ON COLUMN Cuidar.DiasTrabajo IS 'Dias en los que un cuidador trabaja';
+COMMENT ON COLUMN Cuidar.HorarioLaboral IS 'Horario laboral del cuidador';
+COMMENT ON COLUMN Cuidar.Salario IS 'Salario del cuidador';
+COMMENT ON COLUMN Cuidar.NombreAnimal IS 'Nombre del animal';
+
+COMMENT ON CONSTRAINT cuidar_d1 ON Cuidar IS 'El RFC debe ser no nulo, debe tener 4 letras mayusculas, 6 numeros y despues de 2 a 3 letras o numeros';
+COMMENT ON CONSTRAINT cuidar_d2 ON Cuidar IS 'Restriccion CHECK para el nombre del cuidador, verifica que contiene letras y no debe ser nulo';
+COMMENT ON CONSTRAINT cuidar_d3 ON Cuidar IS 'Restriccion CHECK para el apellido paterno del cuidador, verifica que contenga letras y debe ser no nulo';
+COMMENT ON CONSTRAINT cuidar_d4 ON Cuidar IS 'Restriccion CHECK para el apellido paterno del cuidador, verifica que contenga letras y debe ser no nulo';
+COMMENT ON CONSTRAINT checkApe ON Cuidar IS 'Restriccion CHECK para apellido materno y paterno que no permite que sean nulos';
+COMMENT ON CONSTRAINT cuidar_d5 ON Cuidar IS 'Restriccion CHECK para la calle del cuidador, no deba ser nula';
+COMMENT ON CONSTRAINT cuidar_d6 ON Cuidar IS 'Restriccion CHECK para que la colonia no sea nula';
+COMMENT ON CONSTRAINT cuidar_d7 ON Cuidar IS 'Restriccion CHECK para que el estado contenga letras y no sea nulo';
+COMMENT ON CONSTRAINT cuidar_d8 ON Cuidar IS 'Restriccion CHECK para que el genero contenga letras y sea no nulo';
+COMMENT ON CONSTRAINT cuidar_d9 ON Cuidar IS 'Restriccion CHECK para que los dias de trabajo sean mayor a 0 y menor a 30 y sea no nulo';
+COMMENT ON CONSTRAINT cuidar_d11 ON Cuidar IS 'Restriccion CHECK para que el salario sea no nulo y mayor a 0';
+COMMENT ON CONSTRAINT cuidar_d12 ON Cuidar IS 'Restriccion CHECK para que el nombreAnimal contenga letras, sea no vacio y no nulo';
+COMMENT ON CONSTRAINT cuidar_d13 ON Cuidar IS 'Restriccion CHECK para que el sexo sea macho o hembra y no nulo';
+COMMENT ON CONSTRAINT cuidar_d14 ON Cuidar IS 'Restriccion CHECK para que la altura sea mayor a 0 y no nulo';
+COMMENT ON CONSTRAINT cuidar_d15 ON Cuidar IS 'Restriccion CHECK para que el peso sea mayor a 0 y no nulo';
+COMMENT ON CONSTRAINT cuidar_d16 ON Cuidar IS 'Restriccion CHECK para que la especie contenga letras, sea no vacio y no nulo';
+COMMENT ON CONSTRAINT cuidar_d18 ON Cuidar IS 'Restriccion CHECK para que la alimentacion sea carnivoro, herbivoro u omnivoro y no nulo';
+
+COMMENT ON CONSTRAINT rfcCuidador_fk ON Cuidar IS 'La llave foranea rfcCuidador que referencia a la tabla Cuidador';
+COMMENT ON CONSTRAINT idanimal_fk ON Cuidar IS 'La llave foranea idanimal que referencia a la tabla Animal';
+
+
  
 
 
@@ -1164,7 +1257,18 @@ ALTER TABLE TelefonoVisitante ADD CONSTRAINT telefonoVisitante_pk
 PRIMARY KEY(IDVisitante, Telefono);
 
 ALTER TABLE TelefonoVisitante ADD CONSTRAINT idVisitante_fk
-FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante);
+FOREIGN KEY (IDVisitante) REFERENCES Visitante(IDVisitante)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+--COMMENT TelefonoVisitante
+COMMENT ON TABLE TelefonoVisitante IS 'Tabla que contiene los telefonos de los visitantes';
+COMMENT ON COLUMN TelefonoVisitante.IDVisitante IS 'Identificador del visitante al cual le pertenece el telefono';
+COMMENT ON COLUMN TelefonoVisitante.Telefono IS 'Telefono asociado a algun visitante';
+
+COMMENT ON CONSTRAINT telefonoVisitante_d1 ON TelefonoVisitante IS 'El telefono debe estar conformado por numeros y no ser nulo';
+COMMENT ON CONSTRAINT telefonoVisitante_pk ON TelefonoVisitante IS 'El TelefonoVisitante es la llave primaria';
+COMMENT ON CONSTRAINT idVisitante_fk On TelefonoVisitante IS 'El IDVisitante es llave foranea que referencia a la tabla Visitante';
+
 
 
 
